@@ -1,6 +1,6 @@
 // import { FullyProduct } from '@/app/api/course/[slug]/route'
 // import OrderModel from '@/models/OrderModel'
-import OrderModel from '@/models/OrderModel'
+// import OrderModel from '@/models/OrderModel'
 import { IUser } from '@/models/UserModel'
 import crypto from 'crypto'
 import slugify from 'slugify'
@@ -25,11 +25,11 @@ export const capitalize = (value: string): string => {
 }
 
 // get name from user
-export const getName = (user: IUser): string => {
-  return user?.firstName && user?.lastName
-    ? `${user.firstName} ${user.lastName}`
-    : user?.username || user.email
-}
+// export const getName = (user: IUser): string => {
+//   return user?.firstName && user?.lastName
+//     ? `${user.firstName} ${user.lastName}`
+//     : user?.username || user.email
+// }
 
 // generate random code
 export const generateCode = (length: number): string => {
@@ -41,22 +41,22 @@ export const generateCode = (length: number): string => {
 }
 
 // generate order code
-export const generateOrderCode = async (length: number) => {
-  let isUnique: boolean = false
-  let code: string = ''
+// export const generateOrderCode = async (length: number) => {
+//   let isUnique: boolean = false
+//   let code: string = ''
 
-  while (!isUnique) {
-    code = generateCode(length)
+//   while (!isUnique) {
+//     code = generateCode(length)
 
-    const isCodeExists = await OrderModel.findOne({ code }).lean()
+//     const isCodeExists = await OrderModel.findOne({ code }).lean()
 
-    if (!isCodeExists) {
-      isUnique = true
-    }
-  }
+//     if (!isCodeExists) {
+//       isUnique = true
+//     }
+//   }
 
-  return code
-}
+//   return code
+// }
 
 // // make array becomes chaotic
 // export const shuffleArray = (array: any[]): any[] => {
