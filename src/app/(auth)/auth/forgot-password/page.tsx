@@ -1,7 +1,6 @@
 'use client'
 import Divider from '@/components/Divider'
 import Input from '@/components/Input'
-import { forgotPasswordApi } from '@/requests'
 import { signIn } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -52,32 +51,26 @@ function ForgotPasswordPage() {
   })
 
   // MARK: Forgot Password Submition
-  const onSubmit: SubmitHandler<FieldValues> = useCallback(
-    async data => {
-      setIsLoading(true)
-
-      try {
-        // send request to server
-        const { message } = await forgotPasswordApi(data)
-
-        // show success message
-        toast.success(message)
-
-        // set is sent
-        setIsSent(true)
-      } catch (err: any) {
-        // show error message
-        console.log(err)
-        const { message } = err
-        setError('email', { type: 'manual', message: message })
-        toast.error(message)
-      } finally {
-        // reset loading state
-        setIsLoading(false)
-      }
-    },
-    [setError]
-  )
+  const onSubmit: SubmitHandler<FieldValues> = useCallback(async data => {
+    // setIsLoading(true)
+    // try {
+    //   // send request to server
+    //   const { message } = await forgotPasswordApi(data)
+    //   // show success message
+    //   toast.success(message)
+    //   // set is sent
+    //   setIsSent(true)
+    // } catch (err: any) {
+    //   // show error message
+    //   console.log(err)
+    //   const { message } = err
+    //   setError('email', { type: 'manual', message: message })
+    //   toast.error(message)
+    // } finally {
+    //   // reset loading state
+    //   setIsLoading(false)
+    // }
+  }, [])
 
   // keyboard event
   useEffect(() => {
@@ -96,7 +89,7 @@ function ForgotPasswordPage() {
 
   return (
     <div className='h-screen w-full md:px-[46px] md:py-[52px] overflow-hidden'>
-      <div className='relative flex justify-center h-full w-full bg-primary py-9 px-21 md:rounded-[40px] shadow-lg overflow-hidden'>
+      {/* <div className='relative flex justify-center h-full w-full bg-primary py-9 px-21 md:rounded-[40px] shadow-lg overflow-hidden'>
         <div className='hidden md:block absolute top-0 left-0 w-[60%]'>
           <Image
             className='w-full h-full object-contain object-left-top opacity-50'
@@ -187,7 +180,8 @@ function ForgotPasswordPage() {
 
           <Link
             href='/auth/login'
-            className='block w-full text-right text-sm underline underline-offset-2 mt-2'>
+            className='block w-full text-right text-sm underline underline-offset-2 mt-2'
+          >
             Back to login
           </Link>
 
@@ -197,7 +191,8 @@ function ForgotPasswordPage() {
               disabled={isSent && isCounting}
               className={`border border-dark bg-secondary text-dark rounded-3xl px-5 py-1.5 mt-5 font-bold text-lg hover:bg-white trans-200 ${
                 isLoading || isCounting ? 'pointer-events-none bg-white' : 'bg-secondary'
-              }`}>
+              }`}
+            >
               {isLoading || isCounting ? (
                 <FaCircleNotch size={18} className='text-dark trans-200 animate-spin' />
               ) : (
@@ -228,7 +223,8 @@ function ForgotPasswordPage() {
           <div className='flex flex-wrap md:flex-nowrap justify-center gap-x-6 gap-y-4'>
             <button
               className='flex items-center gap-2 group rounded-2xl border border-dark px-2.5 py-3'
-              onClick={() => signIn('github')}>
+              onClick={() => signIn('github')}
+            >
               <div className='aspect-square rounded-full wiggle flex-shrink-0'>
                 <Image
                   className='w-full h-full object-cover'
@@ -259,7 +255,7 @@ function ForgotPasswordPage() {
 
           <Divider size={8} />
         </div>
-      </div>
+      </div> */}
     </div>
   )
 }

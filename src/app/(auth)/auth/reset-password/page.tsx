@@ -2,7 +2,7 @@
 import Divider from '@/components/Divider'
 import Input from '@/components/Input'
 import { commonEmailMistakes } from '@/constants/mistakes'
-import { resetPassword } from '@/requests'
+// import { resetPassword } from '@/requests'
 import { signIn } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -43,63 +43,49 @@ function ResetPasswordPage() {
   }, [queryParams, router])
 
   // validate form
-  const handleValidate: SubmitHandler<FieldValues> = useCallback(
-    data => {
-      let isValid = true
-
-      // password must be at least 6 characters and contain at least 1 lowercase, 1 uppercase, 1 number
-      if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/.test(data.newPassword)) {
-        setError('newPassword', {
-          type: 'manual',
-          message:
-            'Mật khẩu mới phải có ít nhất 6 kí tự và bao gồm ít nhất 1 chữ hoa, 1 chữ thường, 1 chữ số',
-        })
-        isValid = false
-      }
-
-      // check if new password and re-new password are match
-      if (data.newPassword !== data.reNewPassword) {
-        setError('reNewPassword', { type: 'manual', message: 'Mật khẩu không khớp' }) // add this line
-        isValid = false
-      }
-
-      return isValid
-    },
-    [setError]
-  )
+  const handleValidate: SubmitHandler<FieldValues> = useCallback(data => {
+    // let isValid = true
+    // // password must be at least 6 characters and contain at least 1 lowercase, 1 uppercase, 1 number
+    // if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/.test(data.newPassword)) {
+    //   setError('newPassword', {
+    //     type: 'manual',
+    //     message:
+    //       'Mật khẩu mới phải có ít nhất 6 kí tự và bao gồm ít nhất 1 chữ hoa, 1 chữ thường, 1 chữ số',
+    //   })
+    //   isValid = false
+    // }
+    // // check if new password and re-new password are match
+    // if (data.newPassword !== data.reNewPassword) {
+    //   setError('reNewPassword', { type: 'manual', message: 'Mật khẩu không khớp' }) // add this line
+    //   isValid = false
+    // }
+    // return isValid
+  }, [])
 
   // MARK: Reset Password Submition
-  const onSubmit: SubmitHandler<FieldValues> = useCallback(
-    async data => {
-      // validate form
-      if (!handleValidate(data)) return
-
-      // start loading
-      setIsLoading(true)
-
-      try {
-        // get email and token from query
-        const token = queryParams.get('token')
-
-        // send request to server
-        const { message } = await resetPassword(token!, data.newPassword)
-
-        // show success message
-        toast.success(message)
-
-        // redirect to login page
-        router.push('/auth/login')
-      } catch (err: any) {
-        // show error message
-        toast.error(err.message)
-        console.log(err)
-      } finally {
-        // reset loading state
-        setIsLoading(false)
-      }
-    },
-    [handleValidate, router, queryParams]
-  )
+  const onSubmit: SubmitHandler<FieldValues> = useCallback(async data => {
+    // validate form
+    // if (!handleValidate(data)) return
+    // // start loading
+    // setIsLoading(true)
+    // try {
+    //   // get email and token from query
+    //   const token = queryParams.get('token')
+    //   // send request to server
+    //   const { message } = await resetPassword(token!, data.newPassword)
+    //   // show success message
+    //   toast.success(message)
+    //   // redirect to login page
+    //   router.push('/auth/login')
+    // } catch (err: any) {
+    //   // show error message
+    //   toast.error(err.message)
+    //   console.log(err)
+    // } finally {
+    //   // reset loading state
+    //   setIsLoading(false)
+    // }
+  }, [])
 
   // keyboard event
   useEffect(() => {
@@ -118,7 +104,7 @@ function ResetPasswordPage() {
 
   return (
     <div className='h-screen w-full md:px-[46px] md:py-[52px] overflow-hidden'>
-      <div className='relative flex justify-center h-full w-full bg-primary py-9 px-21 md:rounded-[40px] shadow-lg overflow-hidden'>
+      {/* <div className='relative flex justify-center h-full w-full bg-primary py-9 px-21 md:rounded-[40px] shadow-lg overflow-hidden'>
         <div className='hidden md:block absolute top-0 left-0 w-[60%]'>
           <Image
             className='w-full h-full object-contain object-left-top opacity-50'
@@ -203,7 +189,8 @@ function ResetPasswordPage() {
 
           <Link
             href='/auth/login'
-            className='block w-full text-right text-sm underline underline-offset-2 mt-2'>
+            className='block w-full text-right text-sm underline underline-offset-2 mt-2'
+          >
             Back to login
           </Link>
 
@@ -213,7 +200,8 @@ function ResetPasswordPage() {
               disabled={isLoading}
               className={`border border-dark bg-secondary text-dark rounded-3xl px-5 py-1.5 mt-5 font-bold text-lg hover:bg-white trans-200 ${
                 isLoading ? 'bg-slate-200 pointer-events-none' : ''
-              }`}>
+              }`}
+            >
               {isLoading ? (
                 <FaCircleNotch
                   size={18}
@@ -278,7 +266,7 @@ function ResetPasswordPage() {
 
           <Divider size={8} />
         </div>
-      </div>
+      </div> */}
     </div>
   )
 }
