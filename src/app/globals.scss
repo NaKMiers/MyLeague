@@ -1,0 +1,84 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Source+Sans+Pro:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700;1,900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* custom scrollbar */
+::-webkit-scrollbar {
+  width: 20px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #003e70;
+  border-radius: 20px;
+  border: 6px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #a8bbbf;
+}
+
+.trans-200 {
+  @apply transition-all duration-200 ease-in-out;
+}
+
+.trans-300 {
+  @apply transition-all duration-300 ease-in-out;
+}
+
+.wiggle {
+  @apply group-hover:animate-scale-wiggle trans-200 group-hover:scale-[1.2];
+  @apply hover:animate-scale-wiggle trans-200 hover:scale-[1.2];
+  transform-origin: center;
+}
+
+.wiggle-0 {
+  @apply group-hover:animate-wiggle trans-200;
+  @apply hover:animate-wiggle trans-200;
+  transform-origin: center;
+}
+
+.wiggle-1 {
+  @apply hover:animate-scale-wiggle trans-200 hover:scale-[1.2];
+  transform-origin: center;
+}
+
+.spin {
+  @apply animate-spin-slow text-primary/40;
+  animation-play-state: paused;
+
+  &:hover {
+    box-shadow: 0 0px 8px 2px currentColor;
+    animation-play-state: running;
+  }
+}
+
+.loading {
+  @apply bg-loading animate-pulse;
+}
+
+.number-input::-webkit-inner-spin-button,
+.number-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.number-input {
+  -moz-appearance: textfield;
+}
+
+.background-app {
+  background: linear-gradient(45deg, #e0e0b6 15%, #111 15%, #111 85%, #e0e0b6 85%);
+}

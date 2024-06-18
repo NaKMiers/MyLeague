@@ -1,0 +1,45 @@
+import mongoose from 'mongoose'
+import { IUser } from './UserModel'
+const Schema = mongoose.Schema
+
+const TournamentSchema = new Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    type: {
+      type: String,
+      required: true,
+    },
+    startedAt: {
+      type: Date,
+      required: true,
+    },
+    endedAt: {
+      type: Date,
+    },
+    status: {
+      type: String,
+      enum: ['active', 'inactive'],
+      default: 'active',
+    },
+  },
+  {
+    timestamps: true,
+  }
+)
+
+const TournamentModel = mongoose.models.tournament || mongoose.model('tournament', TournamentSchema)
+export default TournamentModel
+
+export interface ITournament {
+  _id: string
+  name: string
+  type: string
+  startedAt: string
+  endedAt: string
+  status: string
+  createdAt: string
+  updatedAt: string
+}
