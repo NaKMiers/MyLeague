@@ -5,7 +5,7 @@
 // import VerifyEmailEmail from '@/components/email/VerifyEmailEmail'
 // import UserModel from '@/models/UserModel'
 // import GivenGift from '@/components/email/GivenGift'
-import { render } from '@react-email/render'
+// import { render } from '@react-email/render'
 import nodeMailer from 'nodemailer'
 
 // Models: User
