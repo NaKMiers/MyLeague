@@ -19,10 +19,18 @@ const TournamentSchema = new Schema(
     endedAt: {
       type: Date,
     },
+    gender: {
+      type: String,
+      enum: ['male', 'female'],
+      required: true,
+    },
     status: {
       type: String,
-      enum: ['active', 'inactive'],
-      default: 'active',
+      enum: ['pending', 'ongoing', 'ended'],
+      default: 'ongoing',
+    },
+    note: {
+      type: String,
     },
   },
   {

@@ -68,6 +68,7 @@ const UserSchema = new Schema(
     },
     gender: {
       type: String,
+      required: true,
       enum: ['male', 'female', 'other'],
     },
     number: {
@@ -104,6 +105,7 @@ const UserModel = mongoose.models.user || mongoose.model('user', UserSchema)
 export default UserModel
 
 export interface IUser {
+  _id: string
   fullName: string
   email: string
   phone: string
@@ -111,7 +113,8 @@ export interface IUser {
   authType: string
   role: string
   avatar: string
-  number: IntersectionObserverEntry
+  gender: string
+  number: number
   createdAt: string
   updatedAt: string
 }

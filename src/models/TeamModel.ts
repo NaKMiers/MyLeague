@@ -1,9 +1,14 @@
 import mongoose from 'mongoose'
 import { IUser } from './UserModel'
+import { ITournament } from './TournamentModel'
 const Schema = mongoose.Schema
 
 const TeamSchema = new Schema(
   {
+    tournamentId: {
+      type: Schema.Types.ObjectId,
+      ref: 'tournament',
+    },
     name: {
       type: String,
       required: true,
@@ -37,8 +42,8 @@ const TeamSchema = new Schema(
     },
     status: {
       type: String,
-      enum: ['active', 'inactive'],
-      default: 'active',
+      enum: ['active', 'pending', 'denied'],
+      default: 'pending',
     },
     teamResponsibility: {
       description: {
@@ -82,6 +87,7 @@ export default TeamModel
 
 export interface ITeam {
   _id: string
+  tournamentId: string | ITournament
   name: string
   coach: string | IUser
   logo: string

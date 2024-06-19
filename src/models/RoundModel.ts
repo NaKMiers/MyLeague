@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 import { ITeam } from './TeamModel'
-import { ITournament } from './Tournament'
+import { ITournament } from './TournamentModel'
 const Schema = mongoose.Schema
 
 const RoundSchema = new Schema(
@@ -13,12 +13,6 @@ const RoundSchema = new Schema(
       type: String,
       required: true,
     },
-    teams: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'team',
-      },
-    ],
     startedAt: {
       type: Date,
       required: true,
@@ -26,6 +20,37 @@ const RoundSchema = new Schema(
     endedAt: {
       type: Date,
     },
+    result: [
+      {
+        winner: {
+          type: Schema.Types.ObjectId,
+          ref: 'team',
+        },
+        goal: {
+          type: Number,
+          default: 0,
+        },
+        score: {
+          type: Number,
+          default: 0,
+        },
+        fault: {
+          type: Number,
+          default: 0,
+        },
+        yellowCard: {
+          type: Number,
+          default: 0,
+        },
+        redCard: {
+          type: Number,
+          default: 0,
+        },
+        note: {
+          type: String,
+        },
+      },
+    ],
   },
   {
     timestamps: true,

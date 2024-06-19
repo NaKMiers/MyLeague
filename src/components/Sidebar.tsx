@@ -110,7 +110,7 @@ function Sidebar({ admin, className = '' }: SidebarProps) {
 
           {curUser && (
             <div className='flex-1 flex items-end'>
-              <div className='flex justify-between items-center gap-4 w-full text-white'>
+              <div className='flex justify-between items-center gap-3 w-full text-white'>
                 <div className='flex items-center gap-4'>
                   <Image
                     className='aspect-square rounded-full shadow-lg'
@@ -119,7 +119,9 @@ function Sidebar({ admin, className = '' }: SidebarProps) {
                     width={40}
                     alt='avatar'
                   />
-                  <span>nakmiers</span>
+                  <span title={curUser.email} className='block text-ellipsis line-clamp-1 max-w-[100px]'>
+                    {curUser.email}
+                  </span>
                 </div>
 
                 <button

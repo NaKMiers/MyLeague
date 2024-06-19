@@ -18,8 +18,6 @@ export async function POST(req: NextRequest) {
     await connectDatabase()
 
     // get data from request
-
-    // get data to create course
     const formData = await req.formData()
     const data = Object.fromEntries(formData)
     const { name, coach, email, phone, school, city, primaryColor, secondaryColor, number } = data
@@ -63,8 +61,9 @@ export async function POST(req: NextRequest) {
         fullName: player.fullName,
         email: player.email,
         phone: player.phone,
-        role: player.role,
         password: generatePassword(8),
+        role: player.role,
+        gender: player.gender,
         number: player.number,
       })
     })

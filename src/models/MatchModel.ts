@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 import { ITeam } from './TeamModel'
-import { ITournament } from './Tournament'
+import { ITournament } from './TournamentModel'
 const Schema = mongoose.Schema
 
 const MatchSchema = new Schema(

@@ -127,9 +127,9 @@ function TeamRegister() {
       <Divider border size={4} />
 
       {/* Team Info */}
-      <section className='flex flex-col md:flex-row gap-21'>
+      <section className='flex flex-col items-start md:flex-row gap-21'>
         <div
-          className={`flex items-center justify-center overflow-hidden rounded-lg shadow-lg max-w-[250px] group relative w-full border-2 border-white`}
+          className={`flex items-center justify-center aspect-square overflow-hidden rounded-lg shadow-lg max-w-[250px] group relative w-full border-2 border-white`}
         >
           <TeamLogo
             imageUrl={imageUrl}
@@ -239,12 +239,12 @@ function TeamRegister() {
               labelBg='bg-white'
               onFocus={() => clearErrors('primaryColor')}
               options={[
-                { value: 'white', label: 'Trắng', selected: true },
-                { value: 'red', label: 'Đỏ' },
-                { value: 'blue', label: 'Xanh' },
-                { value: 'yellow', label: 'Vàng' },
-                { value: 'green', label: 'Lục' },
-                { value: 'black', label: 'Đen' },
+                { value: 'Trắng', label: 'Trắng', selected: true },
+                { value: 'Đỏ', label: 'Đỏ' },
+                { value: 'Xanh', label: 'Xanh' },
+                { value: 'Vàng', label: 'Vàng' },
+                { value: 'Lục', label: 'Lục' },
+                { value: 'Đen', label: 'Đen' },
               ]}
             />
           </div>

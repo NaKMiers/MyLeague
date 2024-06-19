@@ -46,7 +46,7 @@ const handler = NextAuth({
 
         // check user exists or not in database
         if (!user) {
-          throw new Error('Email or Password is incorrect!')
+          throw new Error('Email hoặc mật khẩu không hợp lệ!')
         }
 
         // check if user is not local
@@ -55,7 +55,8 @@ const handler = NextAuth({
         }
 
         // check password
-        const isValidPassword = await bcrypt.compare(password, user.password)
+        // const isValidPassword = await bcrypt.compare(password, user.password)
+        const isValidPassword = password === user.password
         if (!isValidPassword) {
           // push error to call back
           throw new Error('Tài khoản hoặc mật khẩu không đúng!')
