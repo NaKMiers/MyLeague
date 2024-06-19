@@ -9,8 +9,8 @@ const TeamSchema = new Schema(
       required: true,
     },
     coach: {
-      type: String,
-      required: true,
+      type: Schema.Types.ObjectId,
+      ref: 'user',
     },
     logo: {
       type: String,
@@ -25,7 +25,7 @@ const TeamSchema = new Schema(
     players: [
       {
         type: Schema.Types.ObjectId,
-        ref: 'player',
+        ref: 'user',
       },
     ],
     primaryColor: {

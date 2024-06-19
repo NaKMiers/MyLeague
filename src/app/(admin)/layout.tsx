@@ -39,9 +39,6 @@ export default async function RootLayout({
             }}
           />
 
-          {/* Header */}
-          {/* <Header /> */}
-
           {/* Loading */}
           <PageLoading />
 

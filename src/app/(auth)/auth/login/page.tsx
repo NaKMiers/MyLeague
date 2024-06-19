@@ -26,7 +26,7 @@ function LoginPage() {
     clearErrors,
   } = useForm<FieldValues>({
     defaultValues: {
-      usernameOrEmail: '',
+      email: '',
       password: '',
     },
   })
@@ -52,7 +52,7 @@ function LoginPage() {
         if (res?.error) {
           // show error message
           toast.error(res.error)
-          setError('usernameOrEmail', { type: 'manual' })
+          setError('email', { type: 'manual' })
           setError('password', { type: 'manual' })
         }
       } catch (err: any) {
@@ -113,7 +113,7 @@ function LoginPage() {
           register={register}
           errors={errors}
           required
-          type='text'
+          type='password'
           labelBg='bg-white'
           className='min-w-[40%] mt-3'
           onFocus={() => clearErrors('password')}

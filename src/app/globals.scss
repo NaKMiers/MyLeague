@@ -82,3 +82,8 @@
 .background-app {
   background: linear-gradient(45deg, #e0e0b6 15%, #111 15%, #111 85%, #e0e0b6 85%);
 }
+
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}

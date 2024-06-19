@@ -86,12 +86,13 @@ function Input({
               placeholder=' '
               disabled={disabled}
               rows={rows || 4}
+              maxLength={500}
               {...register(id, { required })}
             />
           ) : type === 'select' ? (
             <select
               id={id}
-              className=' block min-h-[42px] px-2.5 pb-2.5 pt-4 w-full text-sm text-dark focus:outline-none focus:ring-0 peer rounded-r-lg'
+              className='rounded-[16px] block min-h-[42px] px-2.5 pb-2.5 pt-4 w-full text-sm text-dark focus:outline-none focus:ring-0 peer rounded-r-lg'
               style={{ WebkitAppearance: 'none', borderTopRightRadius: 16, borderBottomRightRadius: 16 }}
               disabled={disabled}
               {...register(id, { required })}
@@ -117,6 +118,7 @@ function Input({
               {...register(id, { required })}
               onWheel={e => e.currentTarget.blur()}
               placeholder=''
+              maxLength={500}
               {...rest}
             />
           )}

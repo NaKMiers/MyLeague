@@ -49,7 +49,16 @@ const UserSchema = new Schema(
     },
     role: {
       type: String,
-      enum: ['coach', 'player', 'admin', 'employee'],
+      enum: [
+        'coach',
+        'admin',
+        'employee',
+        'striker',
+        'centralDefender',
+        'defender',
+        'goalie',
+        'reserve',
+      ],
     },
 
     // Information
@@ -60,6 +69,9 @@ const UserSchema = new Schema(
     gender: {
       type: String,
       enum: ['male', 'female', 'other'],
+    },
+    number: {
+      type: Number,
     },
     note: {
       type: String,
@@ -99,6 +111,7 @@ export interface IUser {
   authType: string
   role: string
   avatar: string
+  number: IntersectionObserverEntry
   createdAt: string
   updatedAt: string
 }
