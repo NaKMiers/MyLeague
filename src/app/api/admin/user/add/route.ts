@@ -5,8 +5,6 @@ import { NextRequest, NextResponse } from 'next/server'
 // Models: User
 import UserModel from '@/models/UserModel'
 
-export const dynamic = 'force-dynamic'
-
 // [POST]: /api/admin/user/add
 export async function POST(req: NextRequest) {
   console.log(' - Create User - ')
@@ -29,7 +27,7 @@ export async function POST(req: NextRequest) {
     })
 
     // return user
-    return NextResponse.json({ user }, { status: 200 })
+    return NextResponse.json({ user, mesage: 'Thêm tài khoản thành công' }, { status: 200 })
   } catch (err: any) {
     return NextResponse.json({ message: err.message }, { status: 500 })
   }

@@ -33,6 +33,7 @@ function UserCard({ user, setUsers, className = '' }: UserCardProps) {
     defaultValues: {
       fullName: user.fullName,
       email: user.email,
+      password: user.password,
       phone: user.phone,
       gender: user.gender,
       role: user.role,
@@ -53,7 +54,8 @@ function UserCard({ user, setUsers, className = '' }: UserCardProps) {
       // show success message
       toast.success(message)
     } catch (err: any) {
-      console.log(err.message)
+      console.log(err)
+      toast.error(err.message)
     } finally {
       setIsLoading(false)
       setIsOpenConfirmModal(false)
@@ -77,10 +79,10 @@ function UserCard({ user, setUsers, className = '' }: UserCardProps) {
       setIsLoading(true)
 
       try {
-        const { user: t, message } = await updateUserApi(user._id, data)
+        const { user: u, message } = await updateUserApi(user._id, data)
 
         // update state
-        setUsers(prev => prev.map(item => (item._id === t._id ? t : item)))
+        setUsers(prev => prev.map(item => (item._id === u._id ? u : item)))
 
         // show success
         toast.success(message)
@@ -101,25 +103,30 @@ function UserCard({ user, setUsers, className = '' }: UserCardProps) {
   return (
     <div className={`flex items-start border-2 border-dark rounded-lg shadow-lg p-4 ${className}`}>
       <div className='w-[calc(100%_-_44px)]'>
-        <h2 className='text-2xl font-semibold text-dark'>Họ tên: {user.fullName}</h2>
-        <p className='text-lg text-dark-300'>
+        <h2 className='text-xl font-semibold text-dark'>Họ tên: {user.fullName}</h2>
+        <p className='text-sm text-dark-300'>
           Email: <span className='font-semibold text-slate-600'>{user.email}</span>
         </p>
-        <p className='text-lg text-dark-300'>
+        <p className='text-sm text-dark-300'>
           Số điện thoại: <span className='font-semibold text-slate-600'>{user.phone}</span>
         </p>
-        <p className='text-lg text-dark-300'>
+        <p className='text-sm text-dark-300'>
           Password: <span className='font-semibold text-slate-600'>{user.password}</span>
         </p>
-        <p className='text-lg text-dark-300'>
-          Giới tính:{' '}
-          <span className='font-semibold text-slate-600'>
-            {user.gender === 'male' ? 'Nam' : user.gender === 'female' ? 'Nữ' : 'Khác'}
-          </span>
-        </p>
-        <p className='text-lg text-dark-300'>
+        {user.gender && (
+          <p className='text-sm text-dark-300'>
+            Giới tính:{' '}
+            <span className='font-semibold text-slate-600'>{user.gender === 'male' ? 'Nam' : 'Nữ'}</span>
+          </p>
+        )}
+        <p className='text-sm text-dark-300'>
           Chức vụ: <span className='font-semibold text-slate-600'>{user.role}</span>
         </p>
+        {user.status === 'inactive' && (
+          <p className='text-sm text-dark-300'>
+            Trạng thái tài khoản: <span className='font-semibold text-slate-600'>{user.status}</span>
+          </p>
+        )}
       </div>
 
       {/* Action Buttons */}

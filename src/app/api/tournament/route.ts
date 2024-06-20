@@ -16,16 +16,6 @@ export async function GET() {
     // connect to database
     await connectDatabase()
 
-    // create admin
-    await UserModel.create({
-      fullName: 'Nguyen Anh Khoa',
-      email: 'diwas118151@gmail.com',
-      phone: '0899320427',
-      password: 'Asdasd1',
-      role: 'admin',
-      gender: 'male',
-    })
-
     // get ongoing tournaments
     const tournaments = await TournamentModel.find({ status: 'ongoing' }).lean()
 

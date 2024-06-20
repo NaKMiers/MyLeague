@@ -106,24 +106,24 @@ function TournamentCard({ tournament, setTournaments, className = '' }: Tourname
       className={`flex items-start gap-2 border-2 border-dark rounded-lg shadow-lg p-4 ${className}`}
       key={tournament._id}
     >
-      <div className='w-[calc(100%_-_44px)]'>
-        <h2 className='text-2xl font-semibold text-dark'>Giải đấu: {tournament.name}</h2>
-        <p className='text-lg text-dark-300'>
+      <div className='flex flex-col gap-1 w-[calc(100%_-_44px)]'>
+        <h2 className='text-xl font-semibold text-dark'>Giải đấu: {tournament.name}</h2>
+        <p className='text-sm text-dark-300'>
           Thể lệ đấu: <span className='font-semibold text-slate-600'>{tournament.type}</span>
         </p>
-        <p className='text-lg text-dark-300'>
+        <p className='text-sm text-dark-300'>
           Giới tính:{' '}
           <span className='font-semibold text-slate-600'>
             {tournament.gender === 'male' ? 'Nam' : tournament.gender === 'female' ? 'Nữ' : 'Khác'}
           </span>
         </p>
-        <p className='text-lg text-dark-300'>
+        <p className='text-sm text-dark-300'>
           Bắt đầu:{' '}
           <span className='rounded-md px-1.5 border border-green-500 text-green-500'>
             {moment(tournament.startedAt).format('DD/MM/YYYY HH:mm')}
           </span>
         </p>
-        <p className='text-lg text-dark-300'>
+        <p className='text-sm text-dark-300'>
           Kết thúc:{' '}
           <span className='rounded-md px-1.5 border border-slate-500 text-slate-500'>
             {tournament.endedAt
@@ -131,7 +131,7 @@ function TournamentCard({ tournament, setTournaments, className = '' }: Tourname
               : 'Chưa kết thúc'}
           </span>
         </p>
-        <p className='text-lg text-dark-300'>
+        <p className='text-sm text-dark-300'>
           Trạng thái:{' '}
           <span
             className={`rounded-md px-1.5 border ${
@@ -143,13 +143,13 @@ function TournamentCard({ tournament, setTournaments, className = '' }: Tourname
             }`}
           >
             {tournament.status === 'pending'
-              ? 'Chờ xác nhận'
+              ? 'Đang chờ'
               : tournament.status === 'ongoing'
               ? 'Đang diễn ra'
               : 'Đã kết thúc'}
           </span>
         </p>
-        <p className='text-lg text-dark-300'>
+        <p className='text-sm text-dark-300'>
           Note: <span className='text-slate-600 text-base'>{tournament.note}</span>
         </p>
       </div>

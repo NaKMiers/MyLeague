@@ -47,6 +47,11 @@ const UserSchema = new Schema(
       enum: ['local', 'google', 'facebook', 'github'],
       default: 'local',
     },
+    status: {
+      type: String,
+      enum: ['active', 'inactive'],
+      default: 'active',
+    },
     role: {
       type: String,
       enum: [
@@ -114,6 +119,8 @@ export interface IUser {
   avatar: string
   gender: string
   number: number
+  note: string
+  status: string
   createdAt: string
   updatedAt: string
 }

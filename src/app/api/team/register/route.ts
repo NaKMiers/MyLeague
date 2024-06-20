@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: 'Email bị trùng' }, { status: 400 })
     }
 
-    let user = await UserModel.findOne({ email: { $in: emails } }).lean()
+    let user = await UserModel.findOne({ email: { $in: emails }, status: 'active' }).lean()
     if (user) {
       return NextResponse.json({ message: 'Email đã được đăng ký' }, { status: 400 })
     }
@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: 'Số điện thoại bị trùng' }, { status: 401 })
     }
 
-    user = await UserModel.findOne({ phone: { $in: phones } }).lean()
+    user = await UserModel.findOne({ phone: { $in: phones }, status: 'active' }).lean()
     if (user) {
       return NextResponse.json({ message: 'Số điện thoại đã được đăng ký' }, { status: 401 })
     }
@@ -94,6 +94,7 @@ export async function POST(req: NextRequest) {
       phone,
       role: 'coach',
       password: generatePassword(8),
+      status: 'inactive',
     })
     console.log('newCoach: ', newCoach)
 
@@ -107,6 +108,7 @@ export async function POST(req: NextRequest) {
         role: player.role,
         gender: player.gender,
         number: player.number,
+        status: 'inactive',
       })
     })
     console.log('newPlayers: ', newPlayers)

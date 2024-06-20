@@ -126,6 +126,21 @@ function UserModal({
         <Divider size={2} />
 
         <Input
+          id='password'
+          label='Mật khẩu'
+          disabled={isLoading}
+          register={form.register}
+          errors={form.errors}
+          required
+          type='password'
+          labelBg='bg-white'
+          className='min-w-[40%] mt-3'
+          onFocus={() => form.clearErrors('password')}
+        />
+
+        <Divider size={2} />
+
+        <Input
           id='phone'
           label='Phone'
           disabled={isLoading}

@@ -26,11 +26,13 @@ function ManageUsers() {
     handleSubmit,
     formState: { errors },
     setError,
+    reset,
     clearErrors,
   } = useForm<FieldValues>({
     defaultValues: {
       fullName: '',
       email: '',
+      password: '',
       phone: '',
       gender: 'male',
       role: 'admin',
@@ -49,7 +51,8 @@ function ManageUsers() {
 
         console.log('users: ', users)
       } catch (err: any) {
-        console.log(err.message)
+        console.log(err)
+        toast.error(err.message)
       } finally {
         // stop page loading
         dispatch(setPageLoading(false))
@@ -86,6 +89,9 @@ function ManageUsers() {
 
         // close modal
         setOpenModal(false)
+
+        // reset form
+        reset()
       } catch (err: any) {
         console.log(err)
         toast.error(err.message)
@@ -94,7 +100,7 @@ function ManageUsers() {
         setIsLoading(false)
       }
     },
-    [handleValidate, users]
+    [handleValidate, reset, users]
   )
 
   return (
@@ -112,7 +118,7 @@ function ManageUsers() {
 
       <div className='grid md:grid-cols-2 gap-21'>
         {users.map(user => (
-          <UserCard user={user} setUsers={setUsers} className='mb-6' key={user._id} />
+          <UserCard user={user} setUsers={setUsers} key={user._id} />
         ))}
       </div>
 

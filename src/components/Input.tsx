@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react'
 import { FieldErrors, FieldValues, UseFormRegister } from 'react-hook-form'
-import { FaEye } from 'react-icons/fa'
+import { FaEye, FaEyeSlash } from 'react-icons/fa'
 
 interface InputProps {
   label: string
@@ -133,7 +133,7 @@ function Input({
                 onClick={showPassword}
               />
             ) : (
-              <FaEye
+              <FaEyeSlash
                 className='absolute top-1/2 -translate-y-1/2 right-3 text-dark cursor-pointer'
                 size={19}
                 onClick={showPassword}

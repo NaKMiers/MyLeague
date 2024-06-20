@@ -29,7 +29,7 @@ function TeamCard({ team, className = '' }: TeamCardProps) {
   return (
     <Link
       href={`/team/${data._id}`}
-      className={`relative rounded-lg shadow-lg p-4 border-2 border-slate-300 grid sm:grid-cols-2 md:grid-cols-3 gap-21 mb-6 ${className}`}
+      className={`relative rounded-lg overflow-auto shadow-lg p-4 border-2 border-slate-300 grid sm:grid-cols-2 md:grid-cols-3 gap-21 mb-6 ${className}`}
       key={data._id}
     >
       {/* Action Buttons */}

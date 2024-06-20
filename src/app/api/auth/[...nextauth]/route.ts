@@ -54,6 +54,11 @@ const handler = NextAuth({
           throw new Error('Tài khoản này được xác thực bởi ' + user.authType)
         }
 
+        // check status of user
+        if (user.status !== 'active') {
+          throw new Error('Tài khoản của bạn chưa được kích hoạt!')
+        }
+
         // check password
         // const isValidPassword = await bcrypt.compare(password, user.password)
         const isValidPassword = password === user.password
