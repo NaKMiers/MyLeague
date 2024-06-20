@@ -5,8 +5,8 @@ import { NextRequest, NextResponse } from 'next/server'
 // Models: Tournament
 import '@/models/TournamentModel'
 
-// [POST]: /api/admin/tournament/:id/edit
-export async function POST(req: NextRequest, { params: { id } }: { params: { id: string } }) {
+// [PUT]: /api/admin/tournament/:id/edit
+export async function PUT(req: NextRequest, { params: { id } }: { params: { id: string } }) {
   console.log(' - Edit Tournament - ')
 
   try {
@@ -14,7 +14,7 @@ export async function POST(req: NextRequest, { params: { id } }: { params: { id:
     await connectDatabase()
 
     // get data from request to add tournament
-    const { name, type, gender, startedAt, endedAt, note } = await req.json()
+    const { name, type, gender, startedAt, endedAt, note, status } = await req.json()
 
     // edit tournament
     const tournament = await TournamentModel.findByIdAndUpdate(
@@ -26,6 +26,7 @@ export async function POST(req: NextRequest, { params: { id } }: { params: { id:
         startedAt,
         endedAt,
         note,
+        status,
       },
       { new: true }
     )

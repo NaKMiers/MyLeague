@@ -6,7 +6,9 @@ import PlayerForm from '@/components/PlayerForm'
 import TeamLogo from '@/components/TeamLogo'
 import { useAppDispatch, useAppSelector } from '@/libs/hooks'
 import { setPageLoading } from '@/libs/reducers/modalReducer'
+import { ITournament } from '@/models/TournamentModel'
 import { registerTeamApi } from '@/requests'
+import { getOngoingTournamentsApi } from '@/requests'
 import { useCallback, useEffect, useState } from 'react'
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
@@ -17,6 +19,7 @@ function TeamRegister() {
   const isPageLoading = useAppSelector(state => state.modal.isPageLoading)
 
   // states
+  const [tournaments, setTournaments] = useState<ITournament[]>([])
   const [imageUrl, setImageUrl] = useState<string>('')
   const [file, setFile] = useState<File | null>(null)
   const [isChangingTeamLogo, setIsChangingTeamLogo] = useState<boolean>(false)
@@ -33,16 +36,34 @@ function TeamRegister() {
     clearErrors,
   } = useForm<FieldValues>({
     defaultValues: {
+      tournamentId: '',
       name: '',
       coach: '',
       email: '',
       phone: '',
       school: '',
       city: '',
-      primaryColor: '',
-      secondaryColor: '',
+      primaryColor: 'Trắng',
+      secondaryColor: 'Đen',
     },
   })
+
+  // get tournaments to select
+  useEffect(() => {
+    const getTournaments = async () => {
+      try {
+        const { tournaments } = await getOngoingTournamentsApi()
+
+        // update states
+        setTournaments(tournaments)
+      } catch (err: any) {
+        console.log(err)
+        toast.error(err.message)
+      }
+    }
+
+    getTournaments()
+  }, [])
 
   // validate form
   const handleValidate: SubmitHandler<FieldValues> = useCallback(
@@ -81,6 +102,7 @@ function TeamRegister() {
 
       try {
         const formData = new FormData()
+        formData.append('tournamentId', data.tournamentId)
         formData.append('name', data.name)
         formData.append('coach', data.coach)
         formData.append('email', data.email)
@@ -143,6 +165,24 @@ function TeamRegister() {
         </div>
 
         <div className='flex-1 gap-21 grid md:grid-cols-2'>
+          <div className='col-span-2'>
+            <Input
+              id='tournamentId'
+              label='Chọn giải đấu'
+              disabled={isLoading}
+              register={register}
+              errors={errors}
+              required
+              type='select'
+              options={tournaments.map(tournament => ({
+                value: tournament._id,
+                label: tournament.name,
+              }))}
+              labelBg='bg-white'
+              onFocus={() => clearErrors('tournamentId')}
+            />
+          </div>
+
           <div>
             <Input
               id='name'
@@ -239,7 +279,7 @@ function TeamRegister() {
               labelBg='bg-white'
               onFocus={() => clearErrors('primaryColor')}
               options={[
-                { value: 'Trắng', label: 'Trắng', selected: true },
+                { value: 'Trắng', label: 'Trắng' },
                 { value: 'Đỏ', label: 'Đỏ' },
                 { value: 'Xanh', label: 'Xanh' },
                 { value: 'Vàng', label: 'Vàng' },
@@ -261,12 +301,12 @@ function TeamRegister() {
               labelBg='bg-white'
               onFocus={() => clearErrors('secondaryColor')}
               options={[
-                { value: 'black', label: 'Đen', selected: true },
-                { value: 'red', label: 'Đỏ' },
-                { value: 'blue', label: 'Xanh' },
-                { value: 'yellow', label: 'Vàng' },
-                { value: 'green', label: 'Lục' },
-                { value: 'white', label: 'Trắng' },
+                { value: 'Đen', label: 'Đen' },
+                { value: 'Đỏ', label: 'Đỏ' },
+                { value: 'Xanh', label: 'Xanh' },
+                { value: 'Vàng', label: 'Vàng' },
+                { value: 'Lục', label: 'Lục' },
+                { value: 'Trắng', label: 'Trắng' },
               ]}
             />
           </div>

@@ -88,6 +88,7 @@ function Input({
               rows={rows || 4}
               maxLength={500}
               {...register(id, { required })}
+              {...rest}
             />
           ) : type === 'select' ? (
             <select

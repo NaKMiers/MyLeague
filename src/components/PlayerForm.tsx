@@ -26,7 +26,7 @@ function PlayerForm({ id, index, setPlayer, isSubmit, className = '' }: PlayerFo
       fullName: '',
       email: '',
       phone: '',
-      gender: '',
+      gender: 'male',
       role: '',
       number: '',
     },
@@ -118,7 +118,6 @@ function PlayerForm({ id, index, setPlayer, isSubmit, className = '' }: PlayerFo
         options={[
           { label: 'Nam', value: 'male' },
           { label: 'Nữ', value: 'female' },
-          { label: 'Khác', value: 'other' },
         ]}
         labelBg='bg-white'
         className='min-w-[40%] mt-3'

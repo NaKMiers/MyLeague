@@ -1,5 +1,4 @@
 import mongoose from 'mongoose'
-import { IUser } from './UserModel'
 const Schema = mongoose.Schema
 
 const TournamentSchema = new Schema(
@@ -47,7 +46,9 @@ export interface ITournament {
   type: string
   startedAt: string
   endedAt: string
+  gender: string
   status: string
+  note: string
   createdAt: string
   updatedAt: string
 }

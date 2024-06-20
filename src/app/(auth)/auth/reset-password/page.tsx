@@ -1,16 +1,9 @@
 'use client'
-import Divider from '@/components/Divider'
-import Input from '@/components/Input'
-import { commonEmailMistakes } from '@/constants/mistakes'
 // import { resetPassword } from '@/requests'
-import { signIn } from 'next-auth/react'
-import Image from 'next/image'
-import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
-import { FaCircleNotch } from 'react-icons/fa'
 
 function ResetPasswordPage() {
   // hooks

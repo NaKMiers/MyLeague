@@ -68,8 +68,7 @@ const UserSchema = new Schema(
     },
     gender: {
       type: String,
-      required: true,
-      enum: ['male', 'female', 'other'],
+      enum: ['male', 'female'],
     },
     number: {
       type: Number,
@@ -83,23 +82,23 @@ const UserSchema = new Schema(
   }
 )
 
-UserSchema.pre('save', async function (next) {
-  console.log('- Pre Save User -')
-  // check authType & username before saving
-  if (this.authType !== 'local' || !this.isModified('password')) {
-    return next()
-  }
+// UserSchema.pre('save', async function (next) {
+//   console.log('- Pre Save User -')
+//   // check authType & username before saving
+//   if (this.authType !== 'local' || !this.isModified('password')) {
+//     return next()
+//   }
 
-  // hash password before saving
-  try {
-    const hashedPassword = await bcrypt.hash(this.password || '', +process.env.BCRYPT_SALT_ROUND! || 10)
-    this.password = hashedPassword
+//   // hash password before saving
+//   try {
+//     const hashedPassword = await bcrypt.hash(this.password || '', +process.env.BCRYPT_SALT_ROUND! || 10)
+//     this.password = hashedPassword
 
-    next()
-  } catch (err: any) {
-    return next(err)
-  }
-})
+//     next()
+//   } catch (err: any) {
+//     return next(err)
+//   }
+// })
 
 const UserModel = mongoose.models.user || mongoose.model('user', UserSchema)
 export default UserModel

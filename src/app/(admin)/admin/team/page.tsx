@@ -8,7 +8,7 @@ import { ITeam } from '@/models/TeamModel'
 import { getAllTeamsApi } from '@/requests'
 import { useEffect, useState } from 'react'
 
-function AdminTeamPage() {
+function ManageTeams() {
   // hook
   const dispatch = useAppDispatch()
 
@@ -39,7 +39,7 @@ function AdminTeamPage() {
 
   return (
     <div className='min-h-screen'>
-      <h1 className='text-4xl font-semibold text-slate-500'>Quản lí đội bóng đăng ký</h1>
+      <h1 className='text-4xl font-semibold text-slate-500'>Quản lý đội bóng đăng ký</h1>
       <Divider border size={4} />
 
       {teams.map(team => (
@@ -49,4 +49,4 @@ function AdminTeamPage() {
   )
 }
 
-export default AdminTeamPage
+export default ManageTeams

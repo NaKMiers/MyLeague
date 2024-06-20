@@ -137,7 +137,7 @@ function RegisterPage() {
     <div className='w-screen min-h-screen flex items-center justify-center'>
       <div className='bg-white rounded-medium shadow-medium w-full max-w-[500px] p-21'>
         <div className='flex items-center justify-center gap-21'>
-          <Image src='/images/logo.png' width={50} height={50} alt='logo' />
+          <Image className='shadow-lg' src='/images/logo.png' width={50} height={50} alt='logo' />
           <h1 className='text-3xl font-bold text-center'>Register</h1>
         </div>
 

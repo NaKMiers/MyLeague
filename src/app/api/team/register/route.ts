@@ -1,13 +1,16 @@
 import { connectDatabase } from '@/config/database'
 import TeamModel from '@/models/TeamModel'
-import UserModel from '@/models/UserModel'
+import TournamentModel, { ITournament } from '@/models/TournamentModel'
+import UserModel, { IUser } from '@/models/UserModel'
 import { generatePassword } from '@/utils/generate'
+import { uploadFile } from '@/utils/uploadFile'
 import { NextRequest, NextResponse } from 'next/server'
 
-// Models: User, Team
-import '@/models/UserModel'
+// Models: User, Team, Tournament
 import '@/models/TeamModel'
-import { uploadFile } from '@/utils/uploadFile'
+import '@/models/TournamentModel'
+import '@/models/UserModel'
+import Kakao from 'next-auth/providers/kakao'
 
 // [POST]: /api/team/register
 export async function POST(req: NextRequest) {
@@ -20,9 +23,22 @@ export async function POST(req: NextRequest) {
     // get data from request
     const formData = await req.formData()
     const data = Object.fromEntries(formData)
-    const { name, coach, email, phone, school, city, primaryColor, secondaryColor, number } = data
+    const {
+      tournamentId,
+      name,
+      coach,
+      email,
+      phone,
+      school,
+      city,
+      primaryColor,
+      secondaryColor,
+      number,
+    } = data
     const players = JSON.parse(data.players as string)
     let teamLogo = formData.get('teamLogo')
+
+    console.log('players: ', players)
 
     // check avatar
     if (!teamLogo) {
@@ -36,10 +52,36 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: 'Email bị trùng' }, { status: 400 })
     }
 
+    let user = await UserModel.findOne({ email: { $in: emails } }).lean()
+    if (user) {
+      return NextResponse.json({ message: 'Email đã được đăng ký' }, { status: 400 })
+    }
+
     // check if phone of coach and players are duplicated
     const phones = [phone, ...players.map((player: any) => player.phone)]
     if (new Set(phones).size !== phones.length) {
-      return NextResponse.json({ message: 'Số điện thoại bị trùng' }, { status: 400 })
+      return NextResponse.json({ message: 'Số điện thoại bị trùng' }, { status: 401 })
+    }
+
+    user = await UserModel.findOne({ phone: { $in: phones } }).lean()
+    if (user) {
+      return NextResponse.json({ message: 'Số điện thoại đã được đăng ký' }, { status: 401 })
+    }
+
+    // check tournament if exists or not
+    const tournament: ITournament | null = await TournamentModel.findById(tournamentId).lean()
+    if (!tournament) {
+      return NextResponse.json({ message: 'Không tìm thấy giải đấu' })
+    }
+
+    // check gender of players
+    if (players.some((player: IUser) => player.gender !== tournament.gender)) {
+      return NextResponse.json(
+        {
+          message: `Tất cả cầu thủ phải là ${tournament.gender === 'male' ? 'nam' : 'nữ'}`,
+        },
+        { status: 401 }
+      )
     }
 
     // upload avatar and get imageUrl from AWS S3 Bucket
@@ -71,6 +113,7 @@ export async function POST(req: NextRequest) {
 
     // create team
     const newTeam = new TeamModel({
+      tournamentId,
       name,
       coach: newCoach._id,
       logo: teamLogoUrl,

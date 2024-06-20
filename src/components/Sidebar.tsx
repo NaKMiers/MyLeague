@@ -40,7 +40,7 @@ function Sidebar({ admin, className = '' }: SidebarProps) {
 
       {/* Main Sidebar */}
       <div
-        className={`fixed z-40 flex bg-dark-100 h-full trans-300 w-full md:max-w-[300px] ${
+        className={`fixed z-30 flex bg-dark-100 h-full trans-300 w-full md:max-w-[300px] ${
           !open ? '-translate-x-[calc(100%-32px)]' : ''
         } ${className}`}
       >
@@ -103,6 +103,11 @@ function Sidebar({ admin, className = '' }: SidebarProps) {
               <li>
                 <a href='/admin/team' className='block text-white hover:text-secondary trans-200'>
                   Quản lí đăng ký đội bóng
+                </a>
+              </li>
+              <li>
+                <a href='/admin/user' className='block text-white hover:text-secondary trans-200'>
+                  Quản lí người dùng
                 </a>
               </li>
             </ul>
