@@ -157,8 +157,8 @@ function UserCard({ user, setUsers, className = '' }: UserCardProps) {
       <ConfirmDialog
         open={isOpenConfirmModal}
         setOpen={setIsOpenConfirmModal}
-        title={`${confirmType.charAt(0).toUpperCase() + confirmType.slice(1)} User`}
-        content={`Are you sure that you want to ${confirmType} this user?`}
+        title={`Xóa người dùng`}
+        content={`Bạn có chắc muốn xóa ${confirmType} người dùng này không?`}
         onAccept={handleDeleteUser}
         isLoading={isLoading}
         color={'rose'}

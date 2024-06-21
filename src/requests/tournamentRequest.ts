@@ -28,6 +28,20 @@ export const getAllTournamentsApi = async () => {
   return await res.json()
 }
 
+// [GET]: /api/admin/tournament/:id
+export const getTournamentApi = async (id: string) => {
+  const res = await fetch(`/api/admin/tournament/${id}`, {
+    next: { revalidate: 0 },
+  })
+
+  // check status
+  if (!res.ok) {
+    throw new Error((await res.json()).message)
+  }
+
+  return await res.json()
+}
+
 // [POST]: /api/admin/tournament/add
 export const addTournamentApi = async (data: any) => {
   const res = await fetch('/api/admin/tournament/add', {

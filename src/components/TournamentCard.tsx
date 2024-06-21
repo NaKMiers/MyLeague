@@ -4,11 +4,12 @@ import moment from 'moment'
 import { Dispatch, SetStateAction, useCallback, useState } from 'react'
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
-import { FaRegTrashAlt } from 'react-icons/fa'
+import { FaEye, FaRegTrashAlt } from 'react-icons/fa'
 import { MdEdit } from 'react-icons/md'
 import { RiDonutChartFill } from 'react-icons/ri'
 import ConfirmDialog from './ConfirmDialog'
 import TournamentModal from './TournamentModal'
+import Link from 'next/link'
 
 interface TournamentCardProps {
   tournament: ITournament
@@ -156,6 +157,14 @@ function TournamentCard({ tournament, setTournaments, className = '' }: Tourname
 
       {/* Action Buttons */}
       <div className='flex flex-col flex-shrink-0 border bg-white border-dark text-dark rounded-lg px-2 py-3 gap-4'>
+        <Link
+          href={`/admin/tournament/${tournament._id}`}
+          className='block group text-green-500'
+          title='Edit'
+        >
+          <FaEye size={18} className='wiggle' />
+        </Link>
+
         <button className='block group' onClick={() => setIsOpenEditModal(true)} title='Edit'>
           <MdEdit size={18} className='wiggle' />
         </button>
@@ -182,8 +191,8 @@ function TournamentCard({ tournament, setTournaments, className = '' }: Tourname
       <ConfirmDialog
         open={isOpenConfirmModal}
         setOpen={setIsOpenConfirmModal}
-        title={`${confirmType.charAt(0).toUpperCase() + confirmType.slice(1)} User`}
-        content={`Are you sure that you want to ${confirmType} this user?`}
+        title={`Xóa giải đấu`}
+        content={`Bạn có chắc muốn xóa ${confirmType} giải đấu này không?`}
         onAccept={handleDeleteTournament}
         isLoading={isLoading}
         color={'rose'}

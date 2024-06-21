@@ -1,13 +1,20 @@
 import mongoose from 'mongoose'
 import { ITeam } from './TeamModel'
 import { ITournament } from './TournamentModel'
+import { IRound } from './RoundModel'
 const Schema = mongoose.Schema
 
 const MatchSchema = new Schema(
   {
+    tournamentId: {
+      type: Schema.Types.ObjectId,
+      ref: 'tournament',
+      required: true,
+    },
     roundId: {
       type: Schema.Types.ObjectId,
       ref: 'round',
+      required: true,
     },
     teams: [
       {
@@ -22,7 +29,7 @@ const MatchSchema = new Schema(
     status: {
       type: String,
       enum: ['waiting', 'ongoing', 'finished'],
-      default: 'pending',
+      default: 'waiting',
     },
     results: [
       {
@@ -67,6 +74,7 @@ export default MatchModel
 export interface IMatch {
   _id: string
   tournamentId: string | ITournament
+  roundId: string | IRound
   name: string
   teams: string[] | ITeam[]
   startedAt: string

@@ -51,4 +51,7 @@ export interface ITournament {
   note: string
   createdAt: string
   updatedAt: string
+
+  // sub
+  teamQuantity: number
 }

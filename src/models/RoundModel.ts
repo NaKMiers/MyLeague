@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 import { ITeam } from './TeamModel'
 import { ITournament } from './TournamentModel'
+import { IMatch } from './MatchModel'
 const Schema = mongoose.Schema
 
 const RoundSchema = new Schema(
@@ -69,4 +70,7 @@ export interface IRound {
   endedAt: string
   createdAt: string
   updatedAt: string
+
+  // sub
+  matches: IMatch[]
 }
