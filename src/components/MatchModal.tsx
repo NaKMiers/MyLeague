@@ -1,30 +1,32 @@
 import { ITeam } from '@/models/TeamModel'
-import { getAllTeamsApi } from '@/requests'
+import { addMatchApi, getAllTeamsApi } from '@/requests'
 import { useParams } from 'next/navigation'
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
+import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from 'react'
 import { FaCircleNotch } from 'react-icons/fa'
 import Divider from './Divider'
 import Input from './Input'
+import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
+import { IRound } from '@/models/RoundModel'
+import toast from 'react-hot-toast'
+import { IMatch } from '@/models/MatchModel'
 
 interface MatchModalProps {
   open: boolean
   setOpen: Dispatch<SetStateAction<boolean>>
-  editMode?: boolean
+  setMatches: Dispatch<SetStateAction<IMatch[]>>
+  round: IRound
+  match?: IMatch
   title: string
-  onAccept: () => void
-  isLoading?: boolean
-  form: any
   className?: string
 }
 
 function MatchModal({
   open,
   setOpen,
-  editMode,
+  setMatches,
+  round,
+  match,
   title,
-  onAccept,
-  isLoading,
-  form,
   className = '',
 }: MatchModalProps) {
   // hook
@@ -33,6 +35,7 @@ function MatchModal({
 
   // states
   const [teams, setTeams] = useState<ITeam[]>([])
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   // ref
   const modalRef = useRef<HTMLDivElement>(null)
@@ -86,6 +89,83 @@ function MatchModal({
     }
   }, [open])
 
+  // form
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setError,
+    reset,
+    clearErrors,
+  } = useForm<FieldValues>({
+    defaultValues: {
+      team1: (match?.teams[0] as ITeam)?._id || '',
+      team2: (match?.teams[1] as ITeam)?._id || '',
+      startedAt: '',
+      status: match?.status || 'waiting',
+      results: [
+        {
+          teamId: match?.teams[0] || '',
+          goal: match?.results[0]?.goal || 0,
+          score: match?.results[0]?.score || 0,
+          fault: match?.results[0]?.fault || 0,
+          yellowCard: match?.results[0]?.yellowCard || 0,
+          redCard: match?.results[0]?.redCard || 0,
+          note: match?.results[0]?.note || '',
+        },
+        {
+          teamId: match?.teams[1] || '',
+          goal: match?.results[1]?.goal || 0,
+          score: match?.results[1]?.score || 0,
+          fault: match?.results[1]?.fault || 0,
+          yellowCard: match?.results[1]?.yellowCard || 0,
+          redCard: match?.results[1]?.redCard || 0,
+          note: match?.results[1]?.note || '',
+        },
+      ],
+    },
+  })
+
+  // add match
+  const onSubmit: SubmitHandler<FieldValues> = useCallback(
+    async data => {
+      console.log('data: ', data)
+
+      // start loading
+      setIsLoading(true)
+
+      try {
+        data.tournamentId = tournamentId
+        data.roundId = round._id
+
+        if (data.team1 === data.team2) {
+          throw new Error('Hai đội bóng không được trùng nhau')
+        }
+
+        const { match, message } = await addMatchApi(data)
+
+        // update rounds
+        setMatches(prev => [...prev, match])
+
+        // show success
+        toast.success(message)
+
+        // close modal
+        setOpen(false)
+
+        // reset form
+        reset()
+      } catch (err: any) {
+        console.log(err)
+        toast.error(err.message)
+      } finally {
+        // end loading
+        setIsLoading(false)
+      }
+    },
+    [reset, setOpen, setMatches, round._id, tournamentId]
+  )
+
   // keyboard event
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -97,7 +177,7 @@ function MatchModal({
 
         // Enter
         if (e.key === 'Enter') {
-          onAccept()
+          handleSubmit(onSubmit)()
           setOpen(false)
         }
       }
@@ -105,7 +185,7 @@ function MatchModal({
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [setOpen, onAccept, open])
+  }, [setOpen, handleSubmit, onSubmit, open])
 
   return (
     <div
@@ -114,7 +194,9 @@ function MatchModal({
       onClick={() => setOpen(false)}
     >
       <div
-        className='w-full max-w-[500px] rounded-medium shadow-medium p-21 bg-white'
+        className={`${
+          match ? 'max-w-[800px] h-full' : 'max-w-[600px]'
+        } max-h-[500px] w-full rounded-medium shadow-medium overflow-auto p-21 bg-white`}
         ref={modalBodyRef}
         onClick={e => e.stopPropagation()}
       >
@@ -127,8 +209,8 @@ function MatchModal({
             id='team1'
             label='Đội 1'
             disabled={isLoading}
-            register={form.register}
-            errors={form.errors}
+            register={register}
+            errors={errors}
             required
             type='select'
             options={[
@@ -137,14 +219,14 @@ function MatchModal({
             ]}
             labelBg='bg-white'
             className='w-full'
-            onFocus={() => form.clearErrors('team1')}
+            onFocus={() => clearErrors('team1')}
           />
           <Input
             id='team2'
             label='Đội 2'
             disabled={isLoading}
-            register={form.register}
-            errors={form.errors}
+            register={register}
+            errors={errors}
             required
             type='select'
             options={[
@@ -153,7 +235,7 @@ function MatchModal({
             ]}
             labelBg='bg-white'
             className='w-full'
-            onFocus={() => form.clearErrors('team2')}
+            onFocus={() => clearErrors('team2')}
           />
         </div>
 
@@ -163,20 +245,170 @@ function MatchModal({
           id='startedAt'
           label='Thời gian bắt đầu'
           disabled={isLoading}
-          register={form.register}
-          errors={form.errors}
+          register={register}
+          errors={errors}
           required
           type='datetime-local'
           labelBg='bg-white'
           className='min-w-[40%] mt-3'
-          onFocus={() => form.clearErrors('startedAt')}
+          onFocus={() => clearErrors('startedAt')}
         />
 
-        <Divider size={2} />
+        {match && (
+          <Input
+            id='status'
+            label='Trạng thái'
+            disabled={isLoading}
+            register={register}
+            errors={errors}
+            required
+            type='select'
+            options={[
+              { value: 'waiting', label: 'Chờ' },
+              { value: 'playing', label: 'Đang diễn ra' },
+              { value: 'finished', label: 'Kết thúc' },
+            ]}
+            labelBg='bg-white'
+            className='min-w-[40%] mt-5'
+            onFocus={() => clearErrors('status')}
+          />
+        )}
+
+        {match && (
+          <div className='flex gap-2 mt-5'>
+            {/* Team 1 */}
+            <div className='border p-2 rounded-lg shadow-lg w-full'>
+              <Input
+                id='results[0].teamId'
+                label='Team 1'
+                disabled={true}
+                register={register}
+                errors={errors}
+                required
+                type='text'
+                labelBg='bg-white'
+                className='min-w-[40%] mt-3'
+                onFocus={() => clearErrors('results[0].teamId')}
+              />
+              <Input
+                id='results[0].goal'
+                label='Số bàn thắng'
+                disabled={isLoading}
+                register={register}
+                errors={errors}
+                required
+                type='text'
+                labelBg='bg-white'
+                className='min-w-[40%] mt-3'
+                onFocus={() => clearErrors('results[0].goal')}
+              />
+              <Input
+                id='results[0].fault'
+                label='Lỗi'
+                disabled={isLoading}
+                register={register}
+                errors={errors}
+                required
+                type='text'
+                labelBg='bg-white'
+                className='min-w-[40%] mt-3'
+                onFocus={() => clearErrors('results[0].fault')}
+              />
+              <Input
+                id='results[0].yellowCard'
+                label='Số thẻ vàng'
+                disabled={isLoading}
+                register={register}
+                errors={errors}
+                required
+                type='text'
+                labelBg='bg-white'
+                className='min-w-[40%] mt-3'
+                onFocus={() => clearErrors('results[0].yellowCard')}
+              />
+              <Input
+                id='results[0].redCard'
+                label='Số thẻ đỏ'
+                disabled={isLoading}
+                register={register}
+                errors={errors}
+                required
+                type='text'
+                labelBg='bg-white'
+                className='min-w-[40%] mt-3'
+                onFocus={() => clearErrors('results[0].redCard')}
+              />
+            </div>
+
+            {/* Team 2 */}
+            <div className='border p-2 rounded-lg shadow-lg w-full'>
+              <Input
+                id='results[1].teamId'
+                label='Team 2'
+                disabled={true}
+                register={register}
+                errors={errors}
+                required
+                type='text'
+                labelBg='bg-white'
+                className='min-w-[40%] mt-3'
+                onFocus={() => clearErrors('results[1].teamId')}
+              />
+              <Input
+                id='results[1].goal'
+                label='Số bàn thắng'
+                disabled={isLoading}
+                register={register}
+                errors={errors}
+                required
+                type='text'
+                labelBg='bg-white'
+                className='min-w-[40%] mt-3'
+                onFocus={() => clearErrors('results[1].goal')}
+              />
+              <Input
+                id='results[1].fault'
+                label='Lỗi'
+                disabled={isLoading}
+                register={register}
+                errors={errors}
+                required
+                type='text'
+                labelBg='bg-white'
+                className='min-w-[40%] mt-3'
+                onFocus={() => clearErrors('results[1].fault')}
+              />
+              <Input
+                id='results[1].yellowCard'
+                label='Số thẻ vàng'
+                disabled={isLoading}
+                register={register}
+                errors={errors}
+                required
+                type='text'
+                labelBg='bg-white'
+                className='min-w-[40%] mt-3'
+                onFocus={() => clearErrors('results[1].yellowCard')}
+              />
+              <Input
+                id='results[1].redCard'
+                label='Số thẻ đỏ'
+                disabled={isLoading}
+                register={register}
+                errors={errors}
+                required
+                type='text'
+                labelBg='bg-white'
+                className='min-w-[40%] mt-3'
+                onFocus={() => clearErrors('results[1].redCard')}
+              />
+            </div>
+          </div>
+        )}
 
         <div className='flex items-center justify-center gap-3'>
           <button
-            onClick={onAccept}
+            onClick={handleSubmit(onSubmit)}
             disabled={isLoading}
             className={`h-[42px] flex items-center justify-center border border-dark bg-dark-100 text-white rounded-3xl px-5 mt-5 font-bold text-lg hover:bg-white hover:text-dark trans-200 ${
               isLoading ? 'bg-slate-200 pointer-events-none' : ''

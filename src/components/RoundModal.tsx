@@ -1,37 +1,60 @@
-import { Dispatch, SetStateAction, useEffect, useRef } from 'react'
+import { IRound } from '@/models/RoundModel'
+import { addRoundApi, editRoundApi } from '@/requests/roundRequests'
+import moment from 'moment'
+import { useParams } from 'next/navigation'
+import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from 'react'
+import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
+import toast from 'react-hot-toast'
 import { FaCircleNotch } from 'react-icons/fa'
 import Divider from './Divider'
 import Input from './Input'
-import { useParams } from 'next/navigation'
+import { ITeam } from '@/models/TeamModel'
 
 interface RoundModalProps {
   open: boolean
   setOpen: Dispatch<SetStateAction<boolean>>
-  editMode?: boolean
+  round?: IRound
+  setRounds: Dispatch<SetStateAction<IRound[]>>
   title: string
-  onAccept: () => void
   isLoading?: boolean
-  form: any
   className?: string
 }
 
-function RoundModal({
-  open,
-  setOpen,
-  editMode,
-  title,
-  onAccept,
-  isLoading,
-  form,
-  className = '',
-}: RoundModalProps) {
+function RoundModal({ open, setOpen, round, setRounds, title, className = '' }: RoundModalProps) {
   // hook
   const params = useParams()
   const { id: tournamentId } = params
 
+  // states
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+
   // ref
   const modalRef = useRef<HTMLDivElement>(null)
   const modalBodyRef = useRef<HTMLDivElement>(null)
+
+  // form
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+    clearErrors,
+  } = useForm<FieldValues>({
+    defaultValues: {
+      name: round?.name || '',
+      startedAt: round?.startedAt ? moment(round.startedAt).format('YYYY-MM-DDTHH:mm') : '',
+      endedAt: round?.endedAt ? moment(round.endedAt).format('YYYY-MM-DDTHH:mm') : '',
+      result: {
+        winner: round?.result?.team || '',
+        team: round?.result?.team || '',
+        goal: round?.result?.goal || 0,
+        fault: round?.result?.fault || 0,
+        yellowCard: round?.result?.yellowCard || 0,
+        redCard: round?.result?.redCard || 0,
+        note: round?.result?.note || '',
+      },
+    },
+  })
 
   // show/hide modal
   useEffect(() => {
@@ -64,6 +87,74 @@ function RoundModal({
     }
   }, [open])
 
+  // add round
+  const onAddSubmit: SubmitHandler<FieldValues> = useCallback(
+    async data => {
+      // start loading
+      setIsLoading(true)
+
+      try {
+        const { round, message } = await addRoundApi(tournamentId as string, data)
+
+        // update rounds
+        setRounds(prev => [...prev, round])
+
+        // show success
+        toast.success(message)
+
+        // close modal
+        setOpen(false)
+
+        // reset form
+        reset()
+      } catch (err: any) {
+        console.log(err)
+        toast.error(err.message)
+      } finally {
+        // end loading
+        setIsLoading(false)
+      }
+    },
+    [reset, setOpen, setRounds, tournamentId]
+  )
+
+  // edit round
+  const onEditSubmit: SubmitHandler<FieldValues> = useCallback(
+    async data => {
+      if (round) {
+        // start loading
+        setIsLoading(true)
+
+        try {
+          const { round: r, message } = await editRoundApi(tournamentId as string, round._id, data)
+
+          // update rounds
+          setRounds(prev => prev.map(item => (item._id === r._id ? r : item)))
+
+          // show success
+          toast.success(message)
+
+          // close modal
+          setOpen(false)
+
+          // reset form
+          reset({
+            ...r,
+            startedAt: moment(r.startedAt).format('YYYY-MM-DDTHH:mm'),
+            endedAt: r.endedAt ? moment(r.endedAt).format('YYYY-MM-DDTHH:mm') : '',
+          })
+        } catch (err: any) {
+          console.log(err)
+          toast.error(err.message)
+        } finally {
+          // end loading
+          setIsLoading(false)
+        }
+      }
+    },
+    [reset, setOpen, setRounds, tournamentId, round]
+  )
+
   // keyboard event
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -75,7 +166,7 @@ function RoundModal({
 
         // Enter
         if (e.key === 'Enter') {
-          onAccept()
+          handleSubmit(onAddSubmit)()
           setOpen(false)
         }
       }
@@ -83,7 +174,7 @@ function RoundModal({
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [setOpen, onAccept, open])
+  }, [setOpen, handleSubmit, onAddSubmit, open])
 
   return (
     <div
@@ -92,7 +183,9 @@ function RoundModal({
       onClick={() => setOpen(false)}
     >
       <div
-        className='w-full max-w-[500px] rounded-medium shadow-medium p-21 bg-white'
+        className={`w-full ${
+          round ? 'max-w-[800px] h-full' : 'max-w-[500px]'
+        } max-h-[600px] overflow-auto rounded-medium shadow-medium p-21 bg-white`}
         ref={modalBodyRef}
         onClick={e => e.stopPropagation()}
       >
@@ -104,13 +197,13 @@ function RoundModal({
           id='name'
           label='Tên vòng'
           disabled={isLoading}
-          register={form.register}
-          errors={form.errors}
+          register={register}
+          errors={errors}
           required
           type='text'
           labelBg='bg-white'
           className='min-w-[40%] mt-3'
-          onFocus={() => form.clearErrors('name')}
+          onFocus={() => clearErrors('name')}
         />
 
         <Divider size={2} />
@@ -119,20 +212,67 @@ function RoundModal({
           id='startedAt'
           label='Thời gian bắt đầu'
           disabled={isLoading}
-          register={form.register}
-          errors={form.errors}
+          register={register}
+          errors={errors}
           required
           type='datetime-local'
           labelBg='bg-white'
           className='min-w-[40%] mt-3'
-          onFocus={() => form.clearErrors('startedAt')}
+          onFocus={() => clearErrors('startedAt')}
         />
 
         <Divider size={2} />
 
+        {round && (
+          <Input
+            id='endedAt'
+            label='Thời gian kết thúc'
+            disabled={isLoading}
+            register={register}
+            errors={errors}
+            type='datetime-local'
+            labelBg='bg-white'
+            className='min-w-[40%] mt-3'
+            onFocus={() => clearErrors('endedAt')}
+          />
+        )}
+
+        {round && (
+          <div className='rounded-lg shadow-lg border p-2 w-full mt-5'>
+            {/* <Input
+              id='winner'
+              label='Đội thắng'
+              disabled={isLoading}
+              register={register}
+              errors={errors}
+              required
+              min={0}
+              type='select'
+              options={
+                (round?.teams as ITeam[]).map(team => ({ value: team._id, label: team.name })) || []
+              }
+              labelBg='bg-white'
+              className='min-w-[40%]'
+              onFocus={() => clearErrors('winner')}
+            /> */}
+            <Input
+              id='result.note'
+              label='Ghi chú'
+              disabled={isLoading}
+              register={register}
+              errors={errors}
+              min={0}
+              type='textarea'
+              labelBg='bg-white'
+              className='min-w-[40%] mt-5'
+              onFocus={() => clearErrors('note')}
+            />
+          </div>
+        )}
+
         <div className='flex items-center justify-center gap-3'>
           <button
-            onClick={onAccept}
+            onClick={() => (round ? handleSubmit(onEditSubmit)() : handleSubmit(onAddSubmit)())}
             disabled={isLoading}
             className={`h-[42px] flex items-center justify-center border border-dark bg-dark-100 text-white rounded-3xl px-5 mt-5 font-bold text-lg hover:bg-white hover:text-dark trans-200 ${
               isLoading ? 'bg-slate-200 pointer-events-none' : ''

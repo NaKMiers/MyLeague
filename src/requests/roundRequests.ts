@@ -16,8 +16,8 @@ export const addRoundApi = async (tournamentId: string, data: any) => {
 }
 
 // [PUT]: /api/admin/round/:id/edit
-export const editRoundApi = async (id: string, data: any) => {
-  const res = await fetch(`/api/admin/round/${id}/edit`, {
+export const editRoundApi = async (tournamentId: string, id: string, data: any) => {
+  const res = await fetch(`/api/admin/round/${tournamentId}/${id}/edit`, {
     method: 'PUT',
     body: JSON.stringify(data),
   })

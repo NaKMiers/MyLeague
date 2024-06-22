@@ -1,24 +1,33 @@
 import { IMatch } from '@/models/MatchModel'
 import { ITeam } from '@/models/TeamModel'
 import { deleteMatchApi } from '@/requests'
+import moment from 'moment'
+import 'moment/locale/vi'
 import Image from 'next/image'
 import { Dispatch, SetStateAction, useCallback, useState } from 'react'
 import toast from 'react-hot-toast'
-import { FaRegTrashAlt } from 'react-icons/fa'
+import { FaEdit, FaRegTrashAlt } from 'react-icons/fa'
 import { RiDonutChartFill } from 'react-icons/ri'
 import ConfirmDialog from './ConfirmDialog'
+import Divider from './Divider'
+import { FaPencil } from 'react-icons/fa6'
+import MatchModal from './MatchModal'
+import { IRound } from '@/models/RoundModel'
 
 interface MatchCardProps {
   match: IMatch
   setMatches: Dispatch<SetStateAction<IMatch[]>>
+  admin?: boolean
+  round: IRound
   className?: string
 }
 
-function MatchCard({ match, setMatches, className = '' }: MatchCardProps) {
+function MatchCard({ match, round, setMatches, admin, className = '' }: MatchCardProps) {
   // states
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [confirmType, setConfirmType] = useState<string>('delete')
   const [isOpenConfirmModal, setIsOpenConfirmModal] = useState<boolean>(false)
+  const [openMatchModal, setOpenMatchModal] = useState<boolean>(false)
 
   // handle delete match
   const handleDeleteMatch = useCallback(async () => {
@@ -43,24 +52,39 @@ function MatchCard({ match, setMatches, className = '' }: MatchCardProps) {
   }, [setMatches, setIsLoading, match._id])
 
   return (
-    <div
-      className={`relative flex items-center justify-between gap-4 p-4 rounded-lg border shadow-lg overflow-auto ${className}`}
-    >
-      <button
-        className='absolute top-3 left-1/2 -translate-x-1/2 group'
-        disabled={isLoading}
-        onClick={() => {
-          setConfirmType('delete')
-          setIsOpenConfirmModal(true)
-        }}
-        title='Delete'
-      >
-        {isLoading ? (
-          <RiDonutChartFill size={18} className='animate-spin text-slate-300' />
-        ) : (
-          <FaRegTrashAlt size={18} className='wiggle text-rose-500' />
-        )}
-      </button>
+    <div className={`relative p-4 rounded-lg border shadow-lg overflow-auto ${className}`}>
+      {/* Delete Button */}
+      {admin && (
+        <div className='flex items-center justify-center gap-2 absolute top-3 left-1/2 -translate-x-1/2'>
+          <button
+            className=' group'
+            disabled={isLoading}
+            onClick={() => {
+              setConfirmType('delete')
+              setIsOpenConfirmModal(true)
+            }}
+            title='Delete'
+          >
+            {isLoading ? (
+              <RiDonutChartFill size={18} className='animate-spin text-slate-300' />
+            ) : (
+              <FaRegTrashAlt size={18} className='wiggle text-rose-500' />
+            )}
+          </button>
+          <button
+            className=' group'
+            disabled={isLoading}
+            onClick={() => setOpenMatchModal(true)}
+            title='Delete'
+          >
+            {isLoading ? (
+              <RiDonutChartFill size={18} className='animate-spin text-slate-300' />
+            ) : (
+              <FaPencil size={18} className='wiggle text-yellow-500' />
+            )}
+          </button>
+        </div>
+      )}
 
       <div className='flex w-full justify-between items-center gap-3'>
         <div className='flex flex-col gap-2'>
@@ -92,6 +116,13 @@ function MatchCard({ match, setMatches, className = '' }: MatchCardProps) {
         </div>
       </div>
 
+      <Divider size={2} />
+
+      <p className='text-slate-700 font-body tracking-wider text-center'>
+        Thời gian bắt đầu:{' '}
+        <span className='text-green-500'>{moment(match.startedAt).format('LLLL')}</span>
+      </p>
+
       {/* Confirm Dialog */}
       <ConfirmDialog
         open={isOpenConfirmModal}
@@ -101,6 +132,16 @@ function MatchCard({ match, setMatches, className = '' }: MatchCardProps) {
         onAccept={handleDeleteMatch}
         isLoading={isLoading}
         color={'rose'}
+      />
+
+      {/* Edit Match Modal */}
+      <MatchModal
+        title='Cập nhật trận đấu'
+        open={openMatchModal}
+        setOpen={setOpenMatchModal}
+        setMatches={setMatches}
+        round={round}
+        match={match}
       />
     </div>
   )

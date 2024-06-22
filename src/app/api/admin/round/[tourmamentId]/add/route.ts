@@ -17,14 +17,13 @@ export async function POST(
     await connectDatabase()
 
     // get data from request to add round
-    const { name, startedAt, endedAt } = await req.json()
+    const { name, startedAt } = await req.json()
 
     // add round
     const round = await RoundModel.create({
       tournamentId: tourmamentId,
       name,
       startedAt,
-      endedAt,
     })
 
     // return round

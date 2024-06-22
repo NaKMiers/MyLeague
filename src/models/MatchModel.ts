@@ -78,7 +78,8 @@ export interface IMatch {
   name: string
   teams: string[] | ITeam[]
   startedAt: string
-  endedAt: string
+  status: 'waiting' | 'ongoing' | 'finished'
+  results: any[]
   createdAt: string
   updatedAt: string
 }

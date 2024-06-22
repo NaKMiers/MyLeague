@@ -29,8 +29,8 @@ export const getAllTournamentsApi = async () => {
 }
 
 // [GET]: /api/admin/tournament/:id
-export const getTournamentApi = async (id: string) => {
-  const res = await fetch(`/api/admin/tournament/${id}`, {
+export const getTournamentApi = async (id: string, prefix: string = '') => {
+  const res = await fetch(`${prefix}/api/tournament/${id}`, {
     next: { revalidate: 0 },
   })
 

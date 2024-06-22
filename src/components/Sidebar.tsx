@@ -106,11 +106,6 @@ function Sidebar({ admin, className = '' }: SidebarProps) {
                 </a>
               </li>
               <li>
-                <a href='/admin/match' className='block text-white hover:text-secondary trans-200'>
-                  Quản lí lịch thi đấu
-                </a>
-              </li>
-              <li>
                 <a href='/admin/user' className='block text-white hover:text-secondary trans-200'>
                   Quản lí người dùng
                 </a>

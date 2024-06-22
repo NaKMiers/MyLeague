@@ -7,11 +7,9 @@ import { setPageLoading } from '@/libs/reducers/modalReducer'
 import { IRound } from '@/models/RoundModel'
 import { ITournament } from '@/models/TournamentModel'
 import { getTournamentApi } from '@/requests'
-import { addRoundApi } from '@/requests/roundRequests'
 import moment from 'moment'
 import 'moment/locale/vi'
-import { useCallback, useEffect, useState } from 'react'
-import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
+import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 
 function TournamentDetail({ params: { id } }: { params: { id: string } }) {
@@ -21,23 +19,7 @@ function TournamentDetail({ params: { id } }: { params: { id: string } }) {
   // states
   const [tournament, setTournament] = useState<ITournament | null>(null)
   const [rounds, setRounds] = useState<IRound[]>([])
-  const [isLoading, setIsLoading] = useState<boolean>(false)
   const [openRoundModal, setOpenRoundModal] = useState<boolean>(false)
-
-  // form
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    setError,
-    reset,
-    clearErrors,
-  } = useForm<FieldValues>({
-    defaultValues: {
-      name: '',
-      startedAt: '',
-    },
-  })
 
   // get tournament
   useEffect(() => {
@@ -63,39 +45,6 @@ function TournamentDetail({ params: { id } }: { params: { id: string } }) {
 
     getTournament()
   }, [dispatch, id])
-
-  // add round
-  const onSubmit: SubmitHandler<FieldValues> = useCallback(
-    async data => {
-      console.log('data: ', data)
-
-      // start loading
-      setIsLoading(true)
-
-      try {
-        const { round, message } = await addRoundApi(id as string, data)
-
-        // update rounds
-        setRounds(prev => [...prev, round])
-
-        // show success
-        toast.success(message)
-
-        // close modal
-        setOpenRoundModal(false)
-
-        // reset form
-        reset()
-      } catch (err: any) {
-        console.log(err)
-        toast.error(err.message)
-      } finally {
-        // end loading
-        setIsLoading(false)
-      }
-    },
-    [reset, id]
-  )
 
   return (
     <div>
@@ -145,15 +94,13 @@ function TournamentDetail({ params: { id } }: { params: { id: string } }) {
         title='Thêm vòng đấu'
         open={openRoundModal}
         setOpen={setOpenRoundModal}
-        isLoading={isLoading}
-        form={{ register, errors, setError, clearErrors }}
-        onAccept={handleSubmit(onSubmit)}
+        setRounds={setRounds}
       />
 
       {/* Rounds */}
       <div className='grid grid-cols-1 gap-12'>
         {rounds.map(round => (
-          <Round round={round} setRounds={setRounds} key={round._id} />
+          <Round admin round={round} setRounds={setRounds} key={round._id} />
         ))}
       </div>
     </div>

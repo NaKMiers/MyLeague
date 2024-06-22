@@ -21,37 +21,15 @@ const RoundSchema = new Schema(
     endedAt: {
       type: Date,
     },
-    result: [
-      {
-        winner: {
-          type: Schema.Types.ObjectId,
-          ref: 'team',
-        },
-        goal: {
-          type: Number,
-          default: 0,
-        },
-        score: {
-          type: Number,
-          default: 0,
-        },
-        fault: {
-          type: Number,
-          default: 0,
-        },
-        yellowCard: {
-          type: Number,
-          default: 0,
-        },
-        redCard: {
-          type: Number,
-          default: 0,
-        },
-        note: {
-          type: String,
-        },
+    result: {
+      winner: {
+        type: Schema.Types.ObjectId,
+        ref: 'team',
       },
-    ],
+      note: {
+        type: String,
+      },
+    },
   },
   {
     timestamps: true,
@@ -68,6 +46,7 @@ export interface IRound {
   teams: string[] | ITeam[]
   startedAt: string
   endedAt: string
+  result: any
   createdAt: string
   updatedAt: string
 
