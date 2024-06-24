@@ -1,16 +1,17 @@
 'use client'
 import Divider from '@/components/Divider'
-import Round from '@/components/Round'
+import Ranking from '@/components/Ranking'
+import RoundCard from '@/components/RoundCard'
 import RoundModal from '@/components/RoundModal'
 import { useAppDispatch } from '@/libs/hooks'
 import { setPageLoading } from '@/libs/reducers/modalReducer'
 import { IRound } from '@/models/RoundModel'
 import { ITeam } from '@/models/TeamModel'
 import { ITournament } from '@/models/TournamentModel'
-import { getTournamentApi } from '@/requests'
+import { getTournamentApi, rankTournamentApi } from '@/requests'
 import moment from 'moment'
 import 'moment/locale/vi'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 
 function TournamentDetail({ params: { id } }: { params: { id: string } }) {
@@ -21,6 +22,7 @@ function TournamentDetail({ params: { id } }: { params: { id: string } }) {
   const [tournament, setTournament] = useState<ITournament | null>(null)
   const [rounds, setRounds] = useState<IRound[]>([])
   const [teams, setTeams] = useState<ITeam[]>([])
+  const [ranks, setRanks] = useState<any[]>([])
   const [openRoundModal, setOpenRoundModal] = useState<boolean>(false)
 
   // get tournament
@@ -30,13 +32,11 @@ function TournamentDetail({ params: { id } }: { params: { id: string } }) {
       dispatch(setPageLoading(true))
 
       try {
-        const { tournament, rounds, teams } = await getTournamentApi(id)
+        const { tournament, rounds, teams, ranks } = await getTournamentApi(id)
         setTournament(tournament)
         setRounds(rounds)
         setTeams(teams)
-
-        // console.log('tournament', tournament)
-        console.log('rounds', rounds)
+        setRanks(ranks)
       } catch (err: any) {
         console.log(err)
         toast.error(err.message)
@@ -49,11 +49,28 @@ function TournamentDetail({ params: { id } }: { params: { id: string } }) {
     getTournament()
   }, [dispatch, id])
 
+  // handle ranking
+  const handleRanking = useCallback(async () => {
+    try {
+      const { message } = await rankTournamentApi(id)
+      toast.success(message)
+    } catch (err: any) {
+      console.log(err)
+      toast.error(err.message)
+    }
+  }, [id])
+
   return (
     <div>
       {/* Tournament */}
-      <h1 className='text-3xl font-semibold text-slate-500 flex items-center gap-3'>
+      <h1 className='text-3xl font-semibold text-slate-500 flex items-center flex-wrap gap-3'>
         Giải đấu: <span className='text-slate-700'>{tournament?.name}</span>
+        <button
+          className='border-2 px-2 py-1.5 rounded-lg text-sm hover:border-dark hover:text-dark trans-200'
+          onClick={handleRanking}
+        >
+          Xếp hạng
+        </button>
       </h1>
       <Divider border size={4} />
 
@@ -77,6 +94,11 @@ function TournamentDetail({ params: { id } }: { params: { id: string } }) {
           </span>
         </p>
       </div>
+
+      <Divider size={8} />
+
+      {/* Ranking */}
+      <Ranking ranks={ranks} />
 
       <Divider size={12} />
 
@@ -104,7 +126,7 @@ function TournamentDetail({ params: { id } }: { params: { id: string } }) {
       {/* Rounds */}
       <div className='grid grid-cols-1 gap-12'>
         {rounds.map(round => (
-          <Round teams={teams} admin round={round} setRounds={setRounds} key={round._id} />
+          <RoundCard teams={teams} admin round={round} setRounds={setRounds} key={round._id} />
         ))}
       </div>
     </div>

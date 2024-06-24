@@ -1,5 +1,6 @@
 import Divider from '@/components/Divider'
-import Round from '@/components/Round'
+import Ranking from '@/components/Ranking'
+import RoundCard from '@/components/RoundCard'
 import { IRound } from '@/models/RoundModel'
 import { ITeam } from '@/models/TeamModel'
 import { ITournament } from '@/models/TournamentModel'
@@ -11,12 +12,14 @@ async function TournamentDetail({ params: { id } }: { params: { id: string } }) 
   let tournament: ITournament | null = null
   let rounds: IRound[] = []
   let teams: ITeam[] = []
+  let ranks: any[] = []
 
   try {
     const data = await getTournamentApi(id, process.env.NEXT_PUBLIC_APP_URL)
     tournament = data.tournament
     rounds = data.rounds
     teams = data.teams
+    ranks = data.ranks
   } catch (err: any) {
     console.log(err)
     return redirect('/')
@@ -51,6 +54,11 @@ async function TournamentDetail({ params: { id } }: { params: { id: string } }) 
         </p>
       </div>
 
+      <Divider size={8} />
+
+      {/* Ranking */}
+      <Ranking ranks={ranks} />
+
       <Divider size={12} />
 
       {/* Rounds */}
@@ -60,7 +68,7 @@ async function TournamentDetail({ params: { id } }: { params: { id: string } }) 
       {/* Rounds */}
       <div className='grid grid-cols-1 gap-12'>
         {rounds.map(round => (
-          <Round teams={teams} round={round} key={round._id} />
+          <RoundCard teams={teams} round={round} key={round._id} />
         ))}
       </div>
     </div>

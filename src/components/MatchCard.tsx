@@ -88,7 +88,7 @@ function MatchCard({ match, round, setMatches, teams, admin, className = '' }: M
       )}
 
       <div className='flex w-full justify-between items-center gap-3'>
-        <div className='flex flex-col gap-2'>
+        <div className='relative flex flex-col gap-2'>
           <Image
             className='aspect-square rounded-lg shadow-lg'
             src={(match.teams[0] as ITeam).logo}
@@ -96,16 +96,23 @@ function MatchCard({ match, round, setMatches, teams, admin, className = '' }: M
             height={80}
             alt='logo'
           />
+          {match.results[0]?.goal > match.results[1]?.goal && (
+            <Image
+              className='absolute -top-2 -right-2 rotate-45'
+              src='/images/winner.png'
+              width={30}
+              height={30}
+              alt='logo'
+            />
+          )}
           <p className='text-center font-semibold text-slate-700'>{(match.teams[0] as ITeam).name}</p>
         </div>
 
-        <p className='flex items-center flex-nowrap gap-2 justify-center'>
-          <span>-</span>
-          <span className='font-semibold'>: VS :</span>
-          <span>-</span>
+        <p className='flex items-center flex-nowrap gap-2 justify-center text-nowrap font-semibold'>
+          {match.results[0]?.goal || '-'} : VS : {match.results[1]?.goal || '-'}
         </p>
 
-        <div className='flex flex-col gap-2'>
+        <div className='relative flex flex-col gap-2'>
           <Image
             className='aspect-square rounded-lg shadow-lg'
             src={(match.teams[1] as ITeam).logo}
@@ -113,6 +120,15 @@ function MatchCard({ match, round, setMatches, teams, admin, className = '' }: M
             height={80}
             alt='logo'
           />
+          {match.results[0]?.goal < match.results[1]?.goal && (
+            <Image
+              className='absolute -top-2 -right-2 rotate-45'
+              src='/images/winner.png'
+              width={30}
+              height={30}
+              alt='logo'
+            />
+          )}
           <p className='text-center font-semibold text-slate-700'>{(match.teams[1] as ITeam).name}</p>
         </div>
       </div>

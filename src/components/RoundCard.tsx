@@ -19,7 +19,7 @@ import MatchModal from './MatchModal'
 import RoundModal from './RoundModal'
 import { ITeam } from '@/models/TeamModel'
 
-interface RoundProps {
+interface RoundCardProps {
   round: IRound
   setRounds?: Dispatch<SetStateAction<IRound[]>>
   teams: ITeam[]
@@ -27,7 +27,7 @@ interface RoundProps {
   className?: string
 }
 
-function Round({ teams, round, setRounds, admin, className = '' }: RoundProps) {
+function RoundCard({ teams, round, setRounds, admin, className = '' }: RoundCardProps) {
   // hook
   const params = useParams()
   const { id: tournamentId } = params
@@ -39,8 +39,6 @@ function Round({ teams, round, setRounds, admin, className = '' }: RoundProps) {
   const [confirmType, setConfirmType] = useState<string>('delete')
   const [isOpenConfirmModal, setIsOpenConfirmModal] = useState<boolean>(false)
   const [openEditRoundModal, setOpenEditRoundModal] = useState<boolean>(false)
-
-  console.log('matches', matches)
 
   // handle delete round
   const handleDeleteRound = useCallback(async () => {
@@ -178,8 +176,18 @@ function Round({ teams, round, setRounds, admin, className = '' }: RoundProps) {
           />
         ))}
       </div>
+
+      {/* Final Result */}
+      {round.result.winner && (
+        <div className='text-center flex flex-col border p-1 rounded-lg text-sm mt-4'>
+          Đội thắng chung cuộc của vòng đấu:
+          <span className={`text-md font-semibold text-green-500`}>
+            {teams.find(team => team._id === round.result.winner)?.name}
+          </span>
+        </div>
+      )}
     </div>
   )
 }
 
-export default Round
+export default RoundCard

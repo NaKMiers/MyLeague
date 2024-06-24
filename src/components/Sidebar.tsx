@@ -73,11 +73,6 @@ function Sidebar({ admin, className = '' }: SidebarProps) {
               </a>
             </li>
             <li>
-              <a href='/' className='block text-white hover:text-secondary trans-200'>
-                Lịch thi đấu
-              </a>
-            </li>
-            <li>
               <a href='/team/register' className='block text-white hover:text-secondary trans-200'>
                 Đăng ký tham gia
               </a>

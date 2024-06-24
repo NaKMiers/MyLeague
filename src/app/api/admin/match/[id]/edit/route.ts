@@ -22,6 +22,8 @@ export async function PUT(req: NextRequest, { params: { id } }: { params: { id: 
       { $set: { roundId, teams, startedAt, status, results } },
       { new: true }
     )
+      .populate('teams')
+      .lean()
 
     // return new match
     return NextResponse.json({ match, message: 'Cập nhật trận đấu thành công' }, { status: 201 })

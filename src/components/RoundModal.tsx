@@ -119,7 +119,6 @@ function RoundModal({ open, setOpen, round, teams, setRounds, title, className =
   // edit round
   const onEditSubmit: SubmitHandler<FieldValues> = useCallback(
     async data => {
-      console.log('data', data)
       if (!round || !setRounds) return
 
       // endedAt if exists then must be greater than startedAt at least 15 days
@@ -127,8 +126,6 @@ function RoundModal({ open, setOpen, round, teams, setRounds, title, className =
         const startedAt = moment(data.startedAt)
         const endedAt = moment(data.endedAt)
         const diff = endedAt.diff(startedAt, 'days')
-
-        console.log('diff', diff, startedAt, endedAt, 'days')
 
         if (diff < 15) {
           return toast.error('Thời gian kết thúc phải sau ít nhất 15 ngày kể từ thời gian bắt đầu')
@@ -252,7 +249,7 @@ function RoundModal({ open, setOpen, round, teams, setRounds, title, className =
         {round && (
           <div className='rounded-lg shadow-lg border p-2 w-full mt-5'>
             <Input
-              id='winner'
+              id='result.winner'
               label='Đội thắng'
               disabled={isLoading}
               register={register}
@@ -265,7 +262,7 @@ function RoundModal({ open, setOpen, round, teams, setRounds, title, className =
               ]}
               labelBg='bg-white'
               className='min-w-[40%]'
-              onFocus={() => clearErrors('winner')}
+              onFocus={() => clearErrors('result.winner')}
             />
             <Input
               id='result.note'

@@ -86,7 +86,7 @@ function MatchModal({
     defaultValues: {
       team1: (match?.teams[0] as ITeam)?._id || '',
       team2: (match?.teams[1] as ITeam)?._id || '',
-      startedAt: match?.startedAt ? moment(match.startedAt).format('YYYY-MM-DDTHH:mm') : '',
+      startedAt: moment(match?.startedAt || new Date()).format('YYYY-MM-DDTHH:mm'),
       status: match?.status || 'waiting',
       results: [
         {
@@ -114,8 +114,6 @@ function MatchModal({
   // add match
   const onAddSubmit: SubmitHandler<FieldValues> = useCallback(
     async data => {
-      console.log('data: ', data)
-
       // start loading
       setIsLoading(true)
 
@@ -154,8 +152,6 @@ function MatchModal({
   // edit match
   const onEditSubmit: SubmitHandler<FieldValues> = useCallback(
     async data => {
-      console.log('data: ', data)
-
       if (!match) return
 
       // start loading
@@ -170,7 +166,6 @@ function MatchModal({
         }
 
         const { match: m, message } = await editMatchApi(match._id, data)
-        console.log('m: ', m)
 
         // update rounds
         setMatches(prev => prev.map(item => (item._id === m._id ? m : item)))

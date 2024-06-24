@@ -19,11 +19,8 @@ function MyTeamPage() {
       try {
         const { teams } = await getMyTeamsApi()
 
-        console.log('teams:', teams)
-
         setTeams(teams)
       } catch (err: any) {
-        console.log('err:', err.message)
         toast.error(err.message)
       }
     }

@@ -14,6 +14,20 @@ export const getOngoingTournamentsApi = async (prefix: string = '') => {
   return await res.json()
 }
 
+// [GET]: /api/tournament/:id
+export const rankTournamentApi = async (id: string) => {
+  const res = await fetch(`/api/admin/tournament/${id}/ranking`, {
+    next: { revalidate: 0 },
+  })
+
+  // check status
+  if (!res.ok) {
+    throw new Error((await res.json()).message)
+  }
+
+  return await res.json()
+}
+
 // [GET]: /api/admin/tournament
 export const getAllTournamentsApi = async () => {
   const res = await fetch(`/api/admin/tournament`, {

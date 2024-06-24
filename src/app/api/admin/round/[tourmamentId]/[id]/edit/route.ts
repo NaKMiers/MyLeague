@@ -16,10 +16,6 @@ export async function PUT(req: NextRequest, { params: { id } }: { params: { id: 
     // get data from request to add round
     let { name, startedAt, endedAt, result } = await req.json()
 
-    console.log('name', name)
-    console.log('startedAt', startedAt)
-    console.log('endedAt', endedAt)
-    console.log('result', result)
     if (!result.winner) {
       result = {
         ...result,
@@ -37,8 +33,6 @@ export async function PUT(req: NextRequest, { params: { id } }: { params: { id: 
     if (!round) {
       return NextResponse.json({ message: 'Vòng đấu không tồn tại' }, { status: 404 })
     }
-
-    console.log('round', round)
 
     // return round
     return NextResponse.json({ round, message: 'Cập nhật vòng đấu thành công' }, { status: 200 })
