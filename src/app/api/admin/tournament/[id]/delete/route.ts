@@ -7,7 +7,7 @@ import '@/models/TournamentModel'
 
 // [DELETE]: /api/admin/tournament/:id/delete
 export async function DELETE(req: NextRequest, { params: { id } }: { params: { id: string } }) {
-  console.log(' - DeDelete Tournament - ')
+  console.log(' - Delete Tournament - ')
 
   try {
     // connect to database

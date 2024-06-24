@@ -42,8 +42,11 @@ export async function GET(req: NextRequest, { params: { id } }: { params: { id: 
       round.matches = matches.filter(match => match.roundId.toString() === round._id.toString())
     })
 
+    // get all teams of tournament
+    const teams = await TeamModel.find({ tournamentId: id }).lean()
+
     // return tournament
-    return NextResponse.json({ tournament, rounds }, { status: 200 })
+    return NextResponse.json({ tournament, rounds, teams }, { status: 200 })
   } catch (err: any) {
     return NextResponse.json({ message: err.message }, { status: 500 })
   }

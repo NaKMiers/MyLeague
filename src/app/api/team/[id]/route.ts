@@ -19,7 +19,6 @@ export async function GET(req: NextRequest, { params: { id } }: { params: { id: 
     const team = await TeamModel.findOne({ _id: id, status: 'active' })
       .populate(['players', 'coach'])
       .lean()
-    console.log('team:', team)
 
     return NextResponse.json({ team }, { status: 200 })
   } catch (err: any) {

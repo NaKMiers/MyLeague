@@ -48,8 +48,6 @@ function ManageUsers() {
       try {
         const { users } = await getAllUsersApi()
         setUsers(users)
-
-        console.log('users: ', users)
       } catch (err: any) {
         console.log(err)
         toast.error(err.message)

@@ -5,6 +5,7 @@ import RoundModal from '@/components/RoundModal'
 import { useAppDispatch } from '@/libs/hooks'
 import { setPageLoading } from '@/libs/reducers/modalReducer'
 import { IRound } from '@/models/RoundModel'
+import { ITeam } from '@/models/TeamModel'
 import { ITournament } from '@/models/TournamentModel'
 import { getTournamentApi } from '@/requests'
 import moment from 'moment'
@@ -19,6 +20,7 @@ function TournamentDetail({ params: { id } }: { params: { id: string } }) {
   // states
   const [tournament, setTournament] = useState<ITournament | null>(null)
   const [rounds, setRounds] = useState<IRound[]>([])
+  const [teams, setTeams] = useState<ITeam[]>([])
   const [openRoundModal, setOpenRoundModal] = useState<boolean>(false)
 
   // get tournament
@@ -28,12 +30,13 @@ function TournamentDetail({ params: { id } }: { params: { id: string } }) {
       dispatch(setPageLoading(true))
 
       try {
-        const { tournament, rounds } = await getTournamentApi(id)
+        const { tournament, rounds, teams } = await getTournamentApi(id)
         setTournament(tournament)
         setRounds(rounds)
+        setTeams(teams)
 
-        console.log('tournament: ', tournament)
-        console.log('rounds: ', rounds)
+        // console.log('tournament', tournament)
+        console.log('rounds', rounds)
       } catch (err: any) {
         console.log(err)
         toast.error(err.message)
@@ -95,12 +98,13 @@ function TournamentDetail({ params: { id } }: { params: { id: string } }) {
         open={openRoundModal}
         setOpen={setOpenRoundModal}
         setRounds={setRounds}
+        teams={teams}
       />
 
       {/* Rounds */}
       <div className='grid grid-cols-1 gap-12'>
         {rounds.map(round => (
-          <Round admin round={round} setRounds={setRounds} key={round._id} />
+          <Round teams={teams} admin round={round} setRounds={setRounds} key={round._id} />
         ))}
       </div>
     </div>

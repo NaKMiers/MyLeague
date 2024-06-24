@@ -19,10 +19,11 @@ interface MatchCardProps {
   setMatches: Dispatch<SetStateAction<IMatch[]>>
   admin?: boolean
   round: IRound
+  teams: ITeam[]
   className?: string
 }
 
-function MatchCard({ match, round, setMatches, admin, className = '' }: MatchCardProps) {
+function MatchCard({ match, round, setMatches, teams, admin, className = '' }: MatchCardProps) {
   // states
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [confirmType, setConfirmType] = useState<string>('delete')
@@ -118,7 +119,7 @@ function MatchCard({ match, round, setMatches, admin, className = '' }: MatchCar
 
       <Divider size={2} />
 
-      <p className='text-slate-700 font-body tracking-wider text-center'>
+      <p className='text-slate-700 text-sm font-body tracking-wider text-center'>
         Thời gian bắt đầu:{' '}
         <span className='text-green-500'>{moment(match.startedAt).format('LLLL')}</span>
       </p>
@@ -142,6 +143,7 @@ function MatchCard({ match, round, setMatches, admin, className = '' }: MatchCar
         setMatches={setMatches}
         round={round}
         match={match}
+        teams={teams}
       />
     </div>
   )

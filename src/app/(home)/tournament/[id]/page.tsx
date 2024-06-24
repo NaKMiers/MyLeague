@@ -1,6 +1,7 @@
 import Divider from '@/components/Divider'
 import Round from '@/components/Round'
 import { IRound } from '@/models/RoundModel'
+import { ITeam } from '@/models/TeamModel'
 import { ITournament } from '@/models/TournamentModel'
 import { getTournamentApi } from '@/requests'
 import moment from 'moment'
@@ -9,11 +10,13 @@ import { redirect } from 'next/navigation'
 async function TournamentDetail({ params: { id } }: { params: { id: string } }) {
   let tournament: ITournament | null = null
   let rounds: IRound[] = []
+  let teams: ITeam[] = []
 
   try {
     const data = await getTournamentApi(id, process.env.NEXT_PUBLIC_APP_URL)
     tournament = data.tournament
     rounds = data.rounds
+    teams = data.teams
   } catch (err: any) {
     console.log(err)
     return redirect('/')
@@ -57,7 +60,7 @@ async function TournamentDetail({ params: { id } }: { params: { id: string } }) 
       {/* Rounds */}
       <div className='grid grid-cols-1 gap-12'>
         {rounds.map(round => (
-          <Round round={round} key={round._id} />
+          <Round teams={teams} round={round} key={round._id} />
         ))}
       </div>
     </div>

@@ -30,12 +30,8 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    console.log('Filter:', filter)
-
     // get all teams
     const teams = await TeamModel.find(filter).populate('coach tournamentId').lean()
-
-    console.log('Teams:', teams)
 
     // return teams
     return NextResponse.json({ teams }, { status: 200 })

@@ -5,8 +5,8 @@ import { NextRequest, NextResponse } from 'next/server'
 // Models: Match
 import MatchModel from '@/models/MatchModel'
 
-// [POST]: /api/admin/match/:id/edit
-export async function POST(req: NextRequest, { params: { id } }: { params: { id: string } }) {
+// [PUT]: /api/admin/match/:id/edit
+export async function PUT(req: NextRequest, { params: { id } }: { params: { id: string } }) {
   console.log(' - Edit Match - ')
 
   try {
@@ -24,7 +24,7 @@ export async function POST(req: NextRequest, { params: { id } }: { params: { id:
     )
 
     // return new match
-    return NextResponse.json({ match }, { status: 201 })
+    return NextResponse.json({ match, message: 'Cập nhật trận đấu thành công' }, { status: 201 })
   } catch (err: any) {
     return NextResponse.json({ message: err.message }, { status: 500 })
   }

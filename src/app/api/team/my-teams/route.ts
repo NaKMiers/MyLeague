@@ -20,8 +20,6 @@ export async function GET(req: NextRequest) {
     const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET! })
     const userId = token?._id
 
-    console.log('userId:', userId)
-
     // check userId
     if (!userId) {
       return NextResponse.json({ message: 'Không tìm thấy người dùng' }, { status: 404 })

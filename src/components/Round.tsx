@@ -17,15 +17,17 @@ import Divider from './Divider'
 import MatchCard from './MatchCard'
 import MatchModal from './MatchModal'
 import RoundModal from './RoundModal'
+import { ITeam } from '@/models/TeamModel'
 
 interface RoundProps {
   round: IRound
-  setRounds: Dispatch<SetStateAction<IRound[]>>
+  setRounds?: Dispatch<SetStateAction<IRound[]>>
+  teams: ITeam[]
   admin?: boolean
   className?: string
 }
 
-function Round({ round, setRounds, admin, className = '' }: RoundProps) {
+function Round({ teams, round, setRounds, admin, className = '' }: RoundProps) {
   // hook
   const params = useParams()
   const { id: tournamentId } = params
@@ -37,6 +39,8 @@ function Round({ round, setRounds, admin, className = '' }: RoundProps) {
   const [confirmType, setConfirmType] = useState<string>('delete')
   const [isOpenConfirmModal, setIsOpenConfirmModal] = useState<boolean>(false)
   const [openEditRoundModal, setOpenEditRoundModal] = useState<boolean>(false)
+
+  console.log('matches', matches)
 
   // handle delete round
   const handleDeleteRound = useCallback(async () => {
@@ -146,6 +150,7 @@ function Round({ round, setRounds, admin, className = '' }: RoundProps) {
         setOpen={setOpenEditRoundModal}
         setRounds={setRounds}
         round={round}
+        teams={teams}
       />
 
       {/* Add Match Modal */}
@@ -155,6 +160,7 @@ function Round({ round, setRounds, admin, className = '' }: RoundProps) {
         setOpen={setOpenMatchModal}
         setMatches={setMatches}
         round={round}
+        teams={teams}
       />
 
       <Divider size={4} />
@@ -162,7 +168,14 @@ function Round({ round, setRounds, admin, className = '' }: RoundProps) {
       {/* Matches */}
       <div className='grid md:grid-cols-2 lg:grid-cols-4 gap-4'>
         {matches.map(match => (
-          <MatchCard admin={admin} match={match} round={round} setMatches={setMatches} key={match._id} />
+          <MatchCard
+            teams={teams}
+            admin={admin}
+            match={match}
+            round={round}
+            setMatches={setMatches}
+            key={match._id}
+          />
         ))}
       </div>
     </div>

@@ -17,7 +17,6 @@ export async function GET(req: NextRequest) {
 
     // get token
     const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET })
-    console.log('token', token)
 
     return NextResponse.json({ message: 'Home Page' }, { status: 200 })
   } catch (err: any) {

@@ -38,8 +38,6 @@ export async function POST(req: NextRequest) {
     const players = JSON.parse(data.players as string)
     let teamLogo = formData.get('teamLogo')
 
-    console.log('players: ', players)
-
     // check avatar
     if (!teamLogo) {
       return NextResponse.json({ message: 'Thiếu logo đội' }, { status: 400 })
@@ -96,7 +94,6 @@ export async function POST(req: NextRequest) {
       password: generatePassword(8),
       status: 'inactive',
     })
-    console.log('newCoach: ', newCoach)
 
     // create players
     const newPlayers = players.map((player: any) => {
@@ -111,7 +108,6 @@ export async function POST(req: NextRequest) {
         status: 'inactive',
       })
     })
-    console.log('newPlayers: ', newPlayers)
 
     // create team
     const newTeam = new TeamModel({
@@ -125,7 +121,6 @@ export async function POST(req: NextRequest) {
       secondaryColor,
       players: newPlayers.map((player: any) => player._id),
     })
-    console.log('newTeam: ', newTeam)
 
     // save all users
     await UserModel.insertMany([newCoach, ...newPlayers])

@@ -1,5 +1,5 @@
 import { ITeam } from '@/models/TeamModel'
-import { addMatchApi, getAllTeamsApi } from '@/requests'
+import { addMatchApi, editMatchApi, getAllTeamsApi } from '@/requests'
 import { useParams } from 'next/navigation'
 import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from 'react'
 import { FaCircleNotch } from 'react-icons/fa'
@@ -9,12 +9,14 @@ import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
 import { IRound } from '@/models/RoundModel'
 import toast from 'react-hot-toast'
 import { IMatch } from '@/models/MatchModel'
+import moment from 'moment'
 
 interface MatchModalProps {
   open: boolean
   setOpen: Dispatch<SetStateAction<boolean>>
   setMatches: Dispatch<SetStateAction<IMatch[]>>
   round: IRound
+  teams: ITeam[]
   match?: IMatch
   title: string
   className?: string
@@ -27,6 +29,7 @@ function MatchModal({
   round,
   match,
   title,
+  teams,
   className = '',
 }: MatchModalProps) {
   // hook
@@ -34,29 +37,11 @@ function MatchModal({
   const { id: tournamentId } = params
 
   // states
-  const [teams, setTeams] = useState<ITeam[]>([])
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
   // ref
   const modalRef = useRef<HTMLDivElement>(null)
   const modalBodyRef = useRef<HTMLDivElement>(null)
-
-  // get teams
-  useEffect(() => {
-    const getTeams = async () => {
-      try {
-        // get teams
-        const { teams } = await getAllTeamsApi(tournamentId as string)
-        setTeams(teams)
-
-        console.log('teams: ', teams)
-      } catch (err: any) {
-        console.log(err)
-      }
-    }
-
-    getTeams()
-  }, [tournamentId])
 
   // show/hide modal
   useEffect(() => {
@@ -101,11 +86,11 @@ function MatchModal({
     defaultValues: {
       team1: (match?.teams[0] as ITeam)?._id || '',
       team2: (match?.teams[1] as ITeam)?._id || '',
-      startedAt: '',
+      startedAt: match?.startedAt ? moment(match.startedAt).format('YYYY-MM-DDTHH:mm') : '',
       status: match?.status || 'waiting',
       results: [
         {
-          teamId: match?.teams[0] || '',
+          teamId: (match?.teams[0] as ITeam)?._id || '',
           goal: match?.results[0]?.goal || 0,
           score: match?.results[0]?.score || 0,
           fault: match?.results[0]?.fault || 0,
@@ -114,7 +99,7 @@ function MatchModal({
           note: match?.results[0]?.note || '',
         },
         {
-          teamId: match?.teams[1] || '',
+          teamId: (match?.teams[1] as ITeam)?._id || '',
           goal: match?.results[1]?.goal || 0,
           score: match?.results[1]?.score || 0,
           fault: match?.results[1]?.fault || 0,
@@ -127,7 +112,7 @@ function MatchModal({
   })
 
   // add match
-  const onSubmit: SubmitHandler<FieldValues> = useCallback(
+  const onAddSubmit: SubmitHandler<FieldValues> = useCallback(
     async data => {
       console.log('data: ', data)
 
@@ -166,6 +151,52 @@ function MatchModal({
     [reset, setOpen, setMatches, round._id, tournamentId]
   )
 
+  // edit match
+  const onEditSubmit: SubmitHandler<FieldValues> = useCallback(
+    async data => {
+      console.log('data: ', data)
+
+      if (!match) return
+
+      // start loading
+      setIsLoading(true)
+
+      try {
+        data.tournamentId = tournamentId
+        data.roundId = round._id
+
+        if (data.team1 === data.team2) {
+          throw new Error('Hai đội bóng không được trùng nhau')
+        }
+
+        const { match: m, message } = await editMatchApi(match._id, data)
+        console.log('m: ', m)
+
+        // update rounds
+        setMatches(prev => prev.map(item => (item._id === m._id ? m : item)))
+
+        // show success
+        toast.success(message)
+
+        // close modal
+        setOpen(false)
+
+        // reset form
+        reset({
+          ...m,
+          startedAt: m.startedAt ? moment(m.startedAt).format('YYYY-MM-DDTHH:mm') : '',
+        })
+      } catch (err: any) {
+        console.log(err)
+        toast.error(err.message)
+      } finally {
+        // end loading
+        setIsLoading(false)
+      }
+    },
+    [reset, setOpen, setMatches, match, round._id, tournamentId]
+  )
+
   // keyboard event
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -177,7 +208,7 @@ function MatchModal({
 
         // Enter
         if (e.key === 'Enter') {
-          handleSubmit(onSubmit)()
+          handleSubmit(onAddSubmit)()
           setOpen(false)
         }
       }
@@ -185,7 +216,7 @@ function MatchModal({
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [setOpen, handleSubmit, onSubmit, open])
+  }, [setOpen, handleSubmit, onAddSubmit, open])
 
   return (
     <div
@@ -195,8 +226,8 @@ function MatchModal({
     >
       <div
         className={`${
-          match ? 'max-w-[800px] h-full' : 'max-w-[600px]'
-        } max-h-[500px] w-full rounded-medium shadow-medium overflow-auto p-21 bg-white`}
+          match ? 'max-w-[800px]' : 'max-w-[600px]'
+        } max-h-[675px] w-full rounded-medium shadow-medium overflow-auto p-21 bg-white`}
         ref={modalBodyRef}
         onClick={e => e.stopPropagation()}
       >
@@ -297,7 +328,7 @@ function MatchModal({
                 register={register}
                 errors={errors}
                 required
-                type='text'
+                type='number'
                 labelBg='bg-white'
                 className='min-w-[40%] mt-3'
                 onFocus={() => clearErrors('results[0].goal')}
@@ -309,7 +340,7 @@ function MatchModal({
                 register={register}
                 errors={errors}
                 required
-                type='text'
+                type='number'
                 labelBg='bg-white'
                 className='min-w-[40%] mt-3'
                 onFocus={() => clearErrors('results[0].fault')}
@@ -321,7 +352,7 @@ function MatchModal({
                 register={register}
                 errors={errors}
                 required
-                type='text'
+                type='number'
                 labelBg='bg-white'
                 className='min-w-[40%] mt-3'
                 onFocus={() => clearErrors('results[0].yellowCard')}
@@ -333,7 +364,7 @@ function MatchModal({
                 register={register}
                 errors={errors}
                 required
-                type='text'
+                type='number'
                 labelBg='bg-white'
                 className='min-w-[40%] mt-3'
                 onFocus={() => clearErrors('results[0].redCard')}
@@ -361,7 +392,7 @@ function MatchModal({
                 register={register}
                 errors={errors}
                 required
-                type='text'
+                type='number'
                 labelBg='bg-white'
                 className='min-w-[40%] mt-3'
                 onFocus={() => clearErrors('results[1].goal')}
@@ -373,7 +404,7 @@ function MatchModal({
                 register={register}
                 errors={errors}
                 required
-                type='text'
+                type='number'
                 labelBg='bg-white'
                 className='min-w-[40%] mt-3'
                 onFocus={() => clearErrors('results[1].fault')}
@@ -385,7 +416,7 @@ function MatchModal({
                 register={register}
                 errors={errors}
                 required
-                type='text'
+                type='number'
                 labelBg='bg-white'
                 className='min-w-[40%] mt-3'
                 onFocus={() => clearErrors('results[1].yellowCard')}
@@ -397,7 +428,7 @@ function MatchModal({
                 register={register}
                 errors={errors}
                 required
-                type='text'
+                type='number'
                 labelBg='bg-white'
                 className='min-w-[40%] mt-3'
                 onFocus={() => clearErrors('results[1].redCard')}
@@ -408,7 +439,7 @@ function MatchModal({
 
         <div className='flex items-center justify-center gap-3'>
           <button
-            onClick={handleSubmit(onSubmit)}
+            onClick={() => (match ? handleSubmit(onEditSubmit)() : handleSubmit(onAddSubmit)())}
             disabled={isLoading}
             className={`h-[42px] flex items-center justify-center border border-dark bg-dark-100 text-white rounded-3xl px-5 mt-5 font-bold text-lg hover:bg-white hover:text-dark trans-200 ${
               isLoading ? 'bg-slate-200 pointer-events-none' : ''

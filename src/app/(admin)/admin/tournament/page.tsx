@@ -47,11 +47,11 @@ function ManageTournaments() {
 
       try {
         const { tournaments } = await getAllTournamentsApi()
-        console.log('tournaments', tournaments)
 
         setTournaments(tournaments)
       } catch (err: any) {
-        console.log(err.message)
+        console.log(err)
+        toast.error(err.message)
       } finally {
         // stop page loading
         dispatch(setPageLoading(false))
@@ -64,6 +64,14 @@ function ManageTournaments() {
   // validation
   const handleValidate: SubmitHandler<FieldValues> = useCallback(data => {
     let isValid = true
+
+    // endedAt if exists then must be greater than startedAt4
+    if (data.endedAt && data.startedAt) {
+      if (new Date(data.endedAt).getTime() < new Date(data.startedAt).getTime()) {
+        toast.error('Ngày kết thúc phải lớn hơn ngày bắt đầu')
+        isValid = false
+      }
+    }
 
     return isValid
   }, [])

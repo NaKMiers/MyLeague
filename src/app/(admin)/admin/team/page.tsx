@@ -7,6 +7,7 @@ import { setPageLoading } from '@/libs/reducers/modalReducer'
 import { ITeam } from '@/models/TeamModel'
 import { getAllTeamsApi } from '@/requests'
 import { useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
 
 function ManageTeams() {
   // hook
@@ -24,10 +25,9 @@ function ManageTeams() {
       try {
         const { teams } = await getAllTeamsApi()
         setTeams(teams)
-
-        console.log('teams: ', teams)
       } catch (err: any) {
-        console.log(err.message)
+        console.log(err)
+        toast.error(err.message)
       } finally {
         // stop page loading
         dispatch(setPageLoading(false))

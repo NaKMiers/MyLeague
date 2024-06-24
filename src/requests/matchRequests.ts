@@ -31,7 +31,7 @@ export const addMatchApi = async (data: any) => {
 
 // [PUT]: /api/admin/match/:id/edit
 export const editMatchApi = async (id: string, data: any) => {
-  const res = await fetch(`/api/match/${id}/edit`, {
+  const res = await fetch(`/api/admin/match/${id}/edit`, {
     method: 'PUT',
     body: JSON.stringify(data),
   })

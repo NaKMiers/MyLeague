@@ -14,13 +14,14 @@ interface RoundModalProps {
   open: boolean
   setOpen: Dispatch<SetStateAction<boolean>>
   round?: IRound
-  setRounds: Dispatch<SetStateAction<IRound[]>>
+  teams: ITeam[]
+  setRounds?: Dispatch<SetStateAction<IRound[]>>
   title: string
   isLoading?: boolean
   className?: string
 }
 
-function RoundModal({ open, setOpen, round, setRounds, title, className = '' }: RoundModalProps) {
+function RoundModal({ open, setOpen, round, teams, setRounds, title, className = '' }: RoundModalProps) {
   // hook
   const params = useParams()
   const { id: tournamentId } = params
@@ -46,11 +47,6 @@ function RoundModal({ open, setOpen, round, setRounds, title, className = '' }: 
       endedAt: round?.endedAt ? moment(round.endedAt).format('YYYY-MM-DDTHH:mm') : '',
       result: {
         winner: round?.result?.team || '',
-        team: round?.result?.team || '',
-        goal: round?.result?.goal || 0,
-        fault: round?.result?.fault || 0,
-        yellowCard: round?.result?.yellowCard || 0,
-        redCard: round?.result?.redCard || 0,
         note: round?.result?.note || '',
       },
     },
@@ -90,6 +86,8 @@ function RoundModal({ open, setOpen, round, setRounds, title, className = '' }: 
   // add round
   const onAddSubmit: SubmitHandler<FieldValues> = useCallback(
     async data => {
+      if (!setRounds) return
+
       // start loading
       setIsLoading(true)
 
@@ -121,35 +119,49 @@ function RoundModal({ open, setOpen, round, setRounds, title, className = '' }: 
   // edit round
   const onEditSubmit: SubmitHandler<FieldValues> = useCallback(
     async data => {
-      if (round) {
-        // start loading
-        setIsLoading(true)
+      console.log('data', data)
+      if (!round || !setRounds) return
 
-        try {
-          const { round: r, message } = await editRoundApi(tournamentId as string, round._id, data)
+      // endedAt if exists then must be greater than startedAt at least 15 days
+      if (data.endedAt) {
+        const startedAt = moment(data.startedAt)
+        const endedAt = moment(data.endedAt)
+        const diff = endedAt.diff(startedAt, 'days')
 
-          // update rounds
-          setRounds(prev => prev.map(item => (item._id === r._id ? r : item)))
+        console.log('diff', diff, startedAt, endedAt, 'days')
 
-          // show success
-          toast.success(message)
-
-          // close modal
-          setOpen(false)
-
-          // reset form
-          reset({
-            ...r,
-            startedAt: moment(r.startedAt).format('YYYY-MM-DDTHH:mm'),
-            endedAt: r.endedAt ? moment(r.endedAt).format('YYYY-MM-DDTHH:mm') : '',
-          })
-        } catch (err: any) {
-          console.log(err)
-          toast.error(err.message)
-        } finally {
-          // end loading
-          setIsLoading(false)
+        if (diff < 15) {
+          return toast.error('Thời gian kết thúc phải sau ít nhất 15 ngày kể từ thời gian bắt đầu')
         }
+      }
+
+      // start loading
+      setIsLoading(true)
+
+      try {
+        const { round: r, message } = await editRoundApi(tournamentId as string, round._id, data)
+
+        // update rounds
+        setRounds(prev => prev.map(item => (item._id === r._id ? r : item)))
+
+        // show success
+        toast.success(message)
+
+        // close modal
+        setOpen(false)
+
+        // reset form
+        reset({
+          ...r,
+          startedAt: moment(r.startedAt).format('YYYY-MM-DDTHH:mm'),
+          endedAt: r.endedAt ? moment(r.endedAt).format('YYYY-MM-DDTHH:mm') : '',
+        })
+      } catch (err: any) {
+        console.log(err)
+        toast.error(err.message)
+      } finally {
+        // end loading
+        setIsLoading(false)
       }
     },
     [reset, setOpen, setRounds, tournamentId, round]
@@ -184,7 +196,7 @@ function RoundModal({ open, setOpen, round, setRounds, title, className = '' }: 
     >
       <div
         className={`w-full ${
-          round ? 'max-w-[800px] h-full' : 'max-w-[500px]'
+          round ? 'max-w-[800px]' : 'max-w-[500px]'
         } max-h-[600px] overflow-auto rounded-medium shadow-medium p-21 bg-white`}
         ref={modalBodyRef}
         onClick={e => e.stopPropagation()}
@@ -239,22 +251,22 @@ function RoundModal({ open, setOpen, round, setRounds, title, className = '' }: 
 
         {round && (
           <div className='rounded-lg shadow-lg border p-2 w-full mt-5'>
-            {/* <Input
+            <Input
               id='winner'
               label='Đội thắng'
               disabled={isLoading}
               register={register}
               errors={errors}
-              required
               min={0}
               type='select'
-              options={
-                (round?.teams as ITeam[]).map(team => ({ value: team._id, label: team.name })) || []
-              }
+              options={[
+                { value: '', label: 'Chọn đội' },
+                ...teams.map(team => ({ value: team._id, label: team.name })),
+              ]}
               labelBg='bg-white'
               className='min-w-[40%]'
               onFocus={() => clearErrors('winner')}
-            /> */}
+            />
             <Input
               id='result.note'
               label='Ghi chú'
