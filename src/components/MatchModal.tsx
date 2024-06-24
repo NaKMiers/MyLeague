@@ -79,7 +79,7 @@ function MatchModal({
     register,
     handleSubmit,
     formState: { errors },
-    setError,
+    getValues,
     reset,
     clearErrors,
   } = useForm<FieldValues>({
@@ -309,18 +309,12 @@ function MatchModal({
           <div className='flex gap-2 mt-5'>
             {/* Team 1 */}
             <div className='border p-2 rounded-lg shadow-lg w-full'>
-              <Input
-                id='results[0].teamId'
-                label='Team 1'
-                disabled={true}
-                register={register}
-                errors={errors}
-                required
-                type='text'
-                labelBg='bg-white'
-                className='min-w-[40%] mt-3'
-                onFocus={() => clearErrors('results[0].teamId')}
-              />
+              <h3 className='text-center mb-3'>
+                Team:{' '}
+                <span className='font-semibold text-slate-500'>
+                  {teams.find(team => team._id === getValues('results')[0].teamId)?.name}
+                </span>
+              </h3>
               <Input
                 id='results[0].goal'
                 label='Số bàn thắng'
@@ -373,18 +367,12 @@ function MatchModal({
 
             {/* Team 2 */}
             <div className='border p-2 rounded-lg shadow-lg w-full'>
-              <Input
-                id='results[1].teamId'
-                label='Team 2'
-                disabled={true}
-                register={register}
-                errors={errors}
-                required
-                type='text'
-                labelBg='bg-white'
-                className='min-w-[40%] mt-3'
-                onFocus={() => clearErrors('results[1].teamId')}
-              />
+              <h3 className='text-center mb-3'>
+                Team:{' '}
+                <span className='font-semibold text-slate-500'>
+                  {teams.find(team => team._id === getValues('results')[1].teamId)?.name}
+                </span>
+              </h3>
               <Input
                 id='results[1].goal'
                 label='Số bàn thắng'
