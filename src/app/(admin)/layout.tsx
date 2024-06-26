@@ -42,16 +42,11 @@ export default async function RootLayout({
           {/* Loading */}
           <PageLoading />
 
-          {/* Sidebar */}
-
           {/* Main */}
           <main className='relative min-h-screen flex items-start'>
             <Sidebar />
             <div className='p-21 w-full'>{children}</div>
           </main>
-
-          {/* Footer */}
-          {/* <Footer /> */}
         </StoreProvider>
       </body>
     </html>

@@ -1,12 +1,10 @@
-import Footer from '@/components/Footer'
-import Header from '@/components/Header'
 import PageLoading from '@/components/PageLoading'
+import Sidebar from '@/components/Sidebar'
 import StoreProvider from '@/libs/StoreProvider'
 import type { Metadata } from 'next'
 import { getServerSession } from 'next-auth'
 import { Toaster } from 'react-hot-toast'
 import '../globals.scss'
-import Sidebar from '@/components/Sidebar'
 
 export const metadata: Metadata = {
   title: 'My League',
@@ -39,22 +37,14 @@ export default async function RootLayout({
             }}
           />
 
-          {/* Header */}
-          {/* <Header /> */}
-
           {/* Loading */}
           <PageLoading />
-
-          {/* Sidebar */}
 
           {/* Main */}
           <main className='relative min-h-screen flex items-start'>
             <Sidebar />
             <div className='p-21 w-full'>{children}</div>
           </main>
-
-          {/* Footer */}
-          {/* <Footer /> */}
         </StoreProvider>
       </body>
     </html>
