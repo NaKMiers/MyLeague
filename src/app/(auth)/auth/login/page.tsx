@@ -85,8 +85,14 @@ function LoginPage() {
     <div className='w-screen min-h-screen flex items-center justify-center'>
       <div className='bg-white rounded-medium shadow-medium w-full max-w-[500px] p-21'>
         <div className='flex items-center justify-center gap-21'>
-          <Image className='shadow-lg' src='/images/logo.png' width={50} height={50} alt='logo' />
-          <h1 className='text-3xl font-bold text-center'>Login</h1>
+          <Image
+            className='shadow-lg rounded-full aspect-square'
+            src='/images/logo.png'
+            width={50}
+            height={50}
+            alt='logo'
+          />
+          <h1 className='text-3xl font-bold text-center'>Đăng nhập</h1>
         </div>
 
         <Divider size={5} />
