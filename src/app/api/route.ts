@@ -4,20 +4,12 @@ import TournamentModel from '@/models/TournamentModel'
 import moment from 'moment'
 import { NextRequest, NextResponse } from 'next/server'
 
-// Models: User, Tournament, Match
-import '@/models/MatchModel'
+// Models: Tournament, Match, Team
 import '@/models/TournamentModel'
-import '@/models/UserModel'
-import TeamModel from '@/models/TeamModel'
+import '@/models/MatchModel'
+import '@/models/TeamModel'
 
 export const dynamic = 'force-dynamic'
-
-// Set monday as the first day of the week
-moment.updateLocale('en', {
-  week: {
-    dow: 1,
-  },
-})
 
 // [GET]: /
 export async function GET(req: NextRequest) {
