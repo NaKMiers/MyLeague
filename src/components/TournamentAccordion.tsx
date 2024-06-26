@@ -1,7 +1,7 @@
 'use client'
 
 import { ITournament } from '@/models/TournamentModel'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { FaChevronDown } from 'react-icons/fa'
 import TournamentCard from './TournamentCard'
 

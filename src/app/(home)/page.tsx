@@ -1,7 +1,5 @@
 import Divider from '@/components/Divider'
-import SearchBar from '@/components/SearchBar'
 import TournamentAccordion from '@/components/TournamentAccordion'
-import TournamentCard from '@/components/TournamentCard'
 import { IMatch } from '@/models/MatchModel'
 import { ITeam } from '@/models/TeamModel'
 import { ITournament } from '@/models/TournamentModel'
@@ -9,7 +7,6 @@ import { geHomePageApi } from '@/requests'
 import moment from 'moment'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
-import { FaChevronDown } from 'react-icons/fa'
 
 async function Home() {
   // data

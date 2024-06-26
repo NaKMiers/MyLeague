@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
+import { IRound } from './RoundModel'
 import { ITeam } from './TeamModel'
 import { ITournament } from './TournamentModel'
-import { IRound } from './RoundModel'
 const Schema = mongoose.Schema
 
 const MatchSchema = new Schema(

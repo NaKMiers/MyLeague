@@ -1,7 +1,8 @@
 'use client'
 
-import { getSession, signOut, useSession } from 'next-auth/react'
+import { getSession, signOut } from 'next-auth/react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { FiLogOut } from 'react-icons/fi'
 import { TbChevronCompactRight } from 'react-icons/tb'
@@ -46,7 +47,7 @@ function Sidebar({ admin, className = '' }: SidebarProps) {
       >
         <div className='flex flex-col p-21 w-full'>
           {/* Brand */}
-          <div className='flex items-center gap-4 overflow-x-scroll no-scrollbar'>
+          <Link href='/' className='flex items-center gap-4 overflow-x-scroll no-scrollbar'>
             <Image
               className='aspect-square rounded-full shadow-lg'
               src='/images/logo.png'
@@ -56,7 +57,7 @@ function Sidebar({ admin, className = '' }: SidebarProps) {
             />
 
             <h1 className='text-white text-3xl font-semibold'>MyLeague</h1>
-          </div>
+          </Link>
 
           <Divider size={6} />
 
