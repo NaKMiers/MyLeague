@@ -63,12 +63,12 @@ function Input({
           >
             {type === 'password' ? (
               isShowPassword ? (
-                <FaEye size={19} className='text-secondary' />
+                <FaEye size={19} className='text-dark' />
               ) : (
-                <Icon size={19} className='text-secondary' />
+                <Icon size={19} className='text-dark' />
               )
             ) : (
-              <Icon size={19} className='text-secondary' />
+              <Icon size={19} className='text-dark' />
             )}
           </span>
         )}

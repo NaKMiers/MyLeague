@@ -65,12 +65,6 @@ function TournamentDetail({ params: { id } }: { params: { id: string } }) {
       {/* Tournament */}
       <h1 className='text-3xl font-semibold text-slate-500 flex items-center flex-wrap gap-3'>
         Giải đấu: <span className='text-slate-700'>{tournament?.name}</span>
-        <button
-          className='border-2 px-2 py-1.5 rounded-lg text-sm hover:border-dark hover:text-dark trans-200'
-          onClick={handleRanking}
-        >
-          Xếp hạng
-        </button>
       </h1>
       <Divider border size={4} />
 

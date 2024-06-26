@@ -1,3 +1,5 @@
+'use client'
+
 import { ITournament } from '@/models/TournamentModel'
 import { deleteTournamentApi, updateTournamentApi } from '@/requests'
 import moment from 'moment'
@@ -13,11 +15,12 @@ import Link from 'next/link'
 
 interface TournamentCardProps {
   tournament: ITournament
-  setTournaments: Dispatch<SetStateAction<ITournament[]>>
+  setTournaments?: Dispatch<SetStateAction<ITournament[]>>
+  admin?: boolean
   className?: string
 }
 
-function TournamentCard({ tournament, setTournaments, className = '' }: TournamentCardProps) {
+function TournamentCard({ tournament, setTournaments, admin, className = '' }: TournamentCardProps) {
   // states
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [confirmType, setConfirmType] = useState<string>('delete')
@@ -45,6 +48,8 @@ function TournamentCard({ tournament, setTournaments, className = '' }: Tourname
 
   // handle delete tournament
   const handleDeleteTournament = useCallback(async () => {
+    if (!setTournaments) return
+
     setIsLoading(true)
 
     try {
@@ -75,6 +80,7 @@ function TournamentCard({ tournament, setTournaments, className = '' }: Tourname
   const onSubmit: SubmitHandler<FieldValues> = useCallback(
     async data => {
       // validate
+      if (!setTournaments) return
       if (!handleValidate(data)) return
 
       // start loading
@@ -107,7 +113,7 @@ function TournamentCard({ tournament, setTournaments, className = '' }: Tourname
       className={`flex items-start gap-2 border-2 border-dark rounded-lg shadow-lg p-4 ${className}`}
       key={tournament._id}
     >
-      <div className='flex flex-col gap-1 w-[calc(100%_-_44px)]'>
+      <div className={`flex flex-col gap-1 ${admin ? 'w-[calc(100%_-_44px)]' : ''}`}>
         <h2 className='text-xl font-semibold text-dark'>Giải đấu: {tournament.name}</h2>
         <p className='text-sm text-dark-300'>
           Thể lệ đấu: <span className='font-semibold text-slate-600'>{tournament.type}</span>
@@ -150,42 +156,44 @@ function TournamentCard({ tournament, setTournaments, className = '' }: Tourname
               : 'Đã kết thúc'}
           </span>
         </p>
-        <p className='text-sm text-dark-300'>
+        <p className='text-sm text-dark-300 block max-h-[200px] overflow-auto'>
           Note: <span className='text-slate-600 text-base'>{tournament.note}</span>
         </p>
       </div>
 
       {/* Action Buttons */}
-      <div className='flex flex-col flex-shrink-0 border bg-white border-dark text-dark rounded-lg px-2 py-3 gap-4'>
-        <Link
-          href={`/admin/tournament/${tournament._id}`}
-          className='block group text-green-500'
-          title='Edit'
-        >
-          <FaEye size={18} className='wiggle' />
-        </Link>
+      {admin && (
+        <div className='flex flex-col flex-shrink-0 border bg-white border-dark text-dark rounded-lg px-2 py-3 gap-4'>
+          <Link
+            href={`/admin/tournament/${tournament._id}`}
+            className='block group text-green-500'
+            title='Edit'
+          >
+            <FaEye size={18} className='wiggle' />
+          </Link>
 
-        <button className='block group' onClick={() => setIsOpenEditModal(true)} title='Edit'>
-          <MdEdit size={18} className='wiggle' />
-        </button>
+          <button className='block group' onClick={() => setIsOpenEditModal(true)} title='Edit'>
+            <MdEdit size={18} className='wiggle' />
+          </button>
 
-        {/* Delete Button */}
-        <button
-          className='block group'
-          disabled={isLoading}
-          onClick={() => {
-            setConfirmType('delete')
-            setIsOpenConfirmModal(true)
-          }}
-          title='Delete'
-        >
-          {isLoading ? (
-            <RiDonutChartFill size={18} className='animate-spin text-slate-300' />
-          ) : (
-            <FaRegTrashAlt size={18} className='wiggle text-rose-500' />
-          )}
-        </button>
-      </div>
+          {/* Delete Button */}
+          <button
+            className='block group'
+            disabled={isLoading}
+            onClick={() => {
+              setConfirmType('delete')
+              setIsOpenConfirmModal(true)
+            }}
+            title='Delete'
+          >
+            {isLoading ? (
+              <RiDonutChartFill size={18} className='animate-spin text-slate-300' />
+            ) : (
+              <FaRegTrashAlt size={18} className='wiggle text-rose-500' />
+            )}
+          </button>
+        </div>
+      )}
 
       {/* Confirm Dialog */}
       <ConfirmDialog

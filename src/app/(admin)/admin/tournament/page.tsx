@@ -120,14 +120,16 @@ function ManageTournaments() {
       </h1>
       <Divider border size={4} />
 
-      {tournaments.map(tournament => (
-        <TournamentCard
-          tournament={tournament}
-          setTournaments={setTournaments}
-          className='mb-6'
-          key={tournament._id}
-        />
-      ))}
+      <div className='grid md:grid-cols-2 gap-21'>
+        {tournaments.map(tournament => (
+          <TournamentCard
+            tournament={tournament}
+            setTournaments={setTournaments}
+            admin
+            key={tournament._id}
+          />
+        ))}
+      </div>
 
       {/* Add Tournament Modal */}
       <TournamentModal
