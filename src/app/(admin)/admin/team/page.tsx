@@ -8,6 +8,7 @@ import { ITeam } from '@/models/TeamModel'
 import { getAllTeamsApi } from '@/requests'
 import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
+import './team.scss'
 
 function ManageTeams() {
   // hook

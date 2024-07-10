@@ -4,12 +4,12 @@ import Input from '@/components/Input'
 import { resetPasswordApi } from '@/requests'
 import Image from 'next/image'
 import Link from 'next/link'
-// import { resetPassword } from '@/requests'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { FaCircleNotch } from 'react-icons/fa'
+import './reset-password.scss'
 
 function ResetPasswordPage() {
   // hooks

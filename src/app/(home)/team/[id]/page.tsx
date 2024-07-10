@@ -4,6 +4,7 @@ import { IUser } from '@/models/UserModel'
 import { getTeamDetailApi } from '@/requests'
 import Image from 'next/image'
 import { redirect } from 'next/navigation'
+import './team.scss'
 
 async function TeamDetail({ params: { id } }: { params: { id: string } }) {
   let team: ITeam | null = null

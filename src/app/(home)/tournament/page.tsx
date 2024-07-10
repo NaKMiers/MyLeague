@@ -4,6 +4,7 @@ import { getOngoingTournamentsApi } from '@/requests'
 import moment from 'moment'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
+import './tournaments.scss'
 
 async function TournamentPage() {
   let tournaments: ITournament[] = []

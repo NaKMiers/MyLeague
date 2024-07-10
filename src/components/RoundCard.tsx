@@ -178,7 +178,7 @@ function RoundCard({ teams, round, setRounds, admin, className = '' }: RoundCard
       </div>
 
       {/* Final Result */}
-      {round.result.winner && (
+      {round.result?.winner && (
         <div className='text-center flex flex-col border p-1 rounded-lg text-sm mt-4'>
           Đội thắng chung cuộc của vòng đấu:
           <span className={`text-md font-semibold text-green-500`}>

@@ -13,6 +13,7 @@ import moment from 'moment'
 import 'moment/locale/vi'
 import { useCallback, useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
+import './tournament.scss'
 
 function TournamentDetail({ params: { id } }: { params: { id: string } }) {
   // hook

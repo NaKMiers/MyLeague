@@ -9,6 +9,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { FaCircleNotch } from 'react-icons/fa'
+import './login.scss'
 
 function LoginPage() {
   // hooks

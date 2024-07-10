@@ -1,9 +1,9 @@
+import AuthBackground from '@/components/AuthBackground'
 import StoreProvider from '@/libs/StoreProvider'
 import type { Metadata } from 'next'
 import { getServerSession } from 'next-auth'
 import { Toaster } from 'react-hot-toast'
 import '../globals.scss'
-import AuthBackground from '@/components/AuthBackground'
 
 export const metadata: Metadata = {
   title: 'My League',

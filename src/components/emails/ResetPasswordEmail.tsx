@@ -32,7 +32,7 @@ function ResetPasswordEmail({
               <Column>
                 <a
                   href='https://mileg.vercel.app'
-                  className='text-2xl font-bold tracking-[0.3px] no-underline text-dark'
+                  className='text-2xl font-bold tracking-[0.3px] no-underline text-dark ml-3'
                 >
                   My League
                 </a>

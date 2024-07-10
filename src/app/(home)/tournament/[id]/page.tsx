@@ -7,6 +7,7 @@ import { ITournament } from '@/models/TournamentModel'
 import { getTournamentApi } from '@/requests'
 import moment from 'moment'
 import { redirect } from 'next/navigation'
+import './tournament.scss'
 
 async function TournamentDetail({ params: { id } }: { params: { id: string } }) {
   let tournament: ITournament | null = null

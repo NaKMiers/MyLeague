@@ -7,6 +7,7 @@ import { geHomePageApi } from '@/requests'
 import moment from 'moment'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
+import './home.scss'
 
 async function Home() {
   // data

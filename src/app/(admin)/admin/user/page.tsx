@@ -10,6 +10,7 @@ import { addUserApi, getAllUsersApi } from '@/requests'
 import { useCallback, useEffect, useState } from 'react'
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
+import './user.scss'
 
 function ManageUsers() {
   // hook
